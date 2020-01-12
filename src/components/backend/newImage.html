@@ -1,0 +1,70 @@
+<!-- <section v-bind:style="{ 'background': 'url(' + imageUrlList + ')' }" > -->
+
+<section>
+  <div v-html="phpResponse"></div>
+
+  <!-- <form action=""> -->
+  <div>
+    <input
+      type="file"
+      name="file"
+      id="file"
+      ref="myFiles"
+      class="inputfile"
+      @change="previewFiles"
+      accept="image/png, image/jpeg"
+      multiple="multiple"
+    />
+    <label for="file">Importer image(s)</label>
+  </div>
+
+  <ul>
+    <li v-for="(t, indexImg) in imageUrlList" :key="t.id">
+      <div class="itemImg">
+        <img id="blah" :src="t" alt="your image" />
+
+        <div>
+          <div class="inputBoxInfo">
+            <label for="legend">Légende</label>
+            <input type="text" name="legend" v-model="legend[indexImg]" />
+            <!-- <p> {{ legend[indexImg] }} </p> -->
+          </div>
+          <div class="inputBoxInfo">
+            <label for="description">Description (alt)</label>
+            <input type="text" name="description" v-model="description[indexImg]" />
+            <!-- <p> {{ legend[indexImg] }} </p> -->
+          </div>
+          <div class="keywordBox">
+            <div
+              v-bind:class="getClass(indexImg, keyword[1])"
+              v-for="(keyword, index) in keywords"
+              :key="keyword.id"
+              @click="addKeyWord( indexImg, keyword)"
+            >
+              {{ keyword[0] }}
+            </div>
+          </div>
+
+          <div class="addkeyword">
+            <label for="newKeyword">Ajouter un mot-clé</label>
+            <input type="text" v-model="newKeyword" />
+            <!-- <input class="submit" type="submit" @click="createNewKeyWord" /> -->
+            <button class="submit" type="submit" @click="createNewKeyWord">
+              valider
+            </button>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+
+  <button
+    v-if="files.length !== 0 "
+    class="validateAll"
+    @click="sendPicturesToServer"
+  >
+    Enregistrer
+  </button>
+
+  <!-- </form> -->
+</section>

@@ -1,0 +1,110 @@
+.inputfile {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.inputfile + label {
+  padding: 10px;
+  margin: 10px;
+  border-radius: 4px;
+  color: white;
+  background-color: #64b5f6;
+  display: inline-block;
+}
+
+.inputfile:focus + label,
+.inputfile + label:hover {
+  cursor: pointer;
+  background-color: #2286c3;
+}
+.addkeyword {
+  margin: 10px;
+}
+.submit {
+  padding: 8px;
+  background-color: whitesmoke;
+  border-radius: 8px;
+  border: none;
+}
+.addkeyword input {
+  height: 30px;
+  border-radius: 8px;
+}
+ul {
+  padding: 0;
+}
+img {
+  width: 400px;
+  height: 300px;
+  object-fit: contain;
+  padding: 10px;
+}
+li {
+  list-style: none;
+}
+.itemImg {
+  display: flex;
+  background-color: #64b5f6;
+  width: 100%;
+  margin: 20px 0;
+}
+.itemImg > div {
+  display: flex;
+  flex-direction: column;
+  flex: 2;
+}
+.inputBoxInfo {
+  display: flex;
+  align-items: center;
+}
+.inputBoxInfo label {
+  flex: 1;
+}
+.inputBoxInfo input {
+  height: 30px;
+  flex: 3;
+  padding: 2px 10px;
+  border-radius: 5px;
+  margin: 10px;
+}
+.keywordBox {
+  background-color: white;
+  display: flex;
+  margin: 20px;
+  flex-wrap: wrap;
+}
+.keyword {
+  margin: 4px;
+  padding: 5px 10px;
+  background-color: lightgray;
+  border-radius: 5px;
+  width: fit-content;
+  cursor: pointer;
+}
+.selected {
+  background-color: #4db6ac;
+  color: white;
+}
+.selected:hover {
+  background-color: #00867d;
+  color: white;
+}
+label {
+  color: #111;
+}
+
+.validateAll {
+  padding: 8px 16px;
+  background-color: #4db6ac;
+  border-radius: 8px;
+  border: none;
+  color: white;
+}
+.validateAll:hover {
+  background-color: #00867d;
+  color: white;
+}
