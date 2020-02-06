@@ -1,33 +1,41 @@
 <template>
-    <section >
-        <router-link to="/newImage">Ajouter une image</router-link>
-    </section>
+  <section>
+    <div class="giantCircle"></div>
+    <router-link to="/" class="navItem backBtn retourBtn"><i class="fas fa-arrow-circle-left fa-2x"></i>Retour</router-link>
 
+    <router-link to="/newImage" class="navItem item1">Ajouter des images</router-link>
+    <router-link   to="/newImage" class="navItem item2"> Voir les images</router-link>
+    <router-link   to="/newImage" class="navItem item3">autre ...</router-link>
+    <router-link   to="/newImage" class="navItem item4">autre ...</router-link>
+    <router-link   to="/newImage" class="navItem item5">autre ...</router-link>
+    <router-link   to="/newImage" class="navItem item6">autre ...</router-link>
+    <router-link   to="/newImage" class="navItem item7">autre ...</router-link>
+    <router-link   to="/newImage" class="navItem item8">autre ...</router-link>
+  </section>
 </template>
 
 <script>
-    export default {
-        name: 'App',
-        data() {
-            return {
-            }
-        },
-        mounted() {
-        },
-        methods: {
-        }
-    }
+export default {
+  name: "App",
+  data() {
+    return {};
+  },
+  mounted() {},
+  methods: {}
+};
 </script>
 
 <style scoped>
-    body {
-        background-color: #F0F0F0;
-    }
-    a{
-        padding: 20px;
-        border-radius: 5px;
-        background-color: cornflowerblue;
-        color: white;
-        text-decoration: none
-    }
+
+section {
+  background-color: #1c313a;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: all 2s ease;
+
+}
+
 </style>

@@ -1,42 +1,33 @@
 <template>
-<div>
-  <p>hello world</p>
-  <router-link to="/backend">backend</router-link>
+  <section>
+    <div class="giantCircle"></div>
+    <!-- <div class="content"> -->
+        <router-link to="/backend" class="navItem item1">backend</router-link>
 
-
-  <div>
-    <p>php call</p>
-    <a href="http://localhost/my-photos/src/php/index.php">THE LIEN</a>
-  </div>
-</div>
-
+          <a class="navItem item2" href="http://localhost/my-photos/src/php/index.php">Lien vers php</a>
+      <!-- </div> -->
+  </section>
 </template>
 
 <script>
 export default {
-  name: 'HelloWorld',
-  data () {
+  name: "HelloWorld",
+  data() {
     return {
-      msg: 'Welcome to Your Vue.js App'
-    }
+      msg: "Welcome to Your Vue.js App"
+    };
   }
-}
+};
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1, h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+section {
+  background-color: #1c313a;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 </style>

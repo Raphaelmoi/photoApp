@@ -25,11 +25,8 @@ export default {
   },
   methods: {
 
-    
-    previewFiles () {
+    uploadImgOnFront () {
       this.files = this.$refs.myFiles.files
-      // console.log(this.files[0].name)
-
       for (let index = 0; index < this.files.length; index++) {
         // add empty array for each imported element
         this.selectedKeyWords.push([])
@@ -41,7 +38,7 @@ export default {
       }
     },
 
-    sendPicturesToServer () {
+    onClicPrepareDataBeforeSending () {
       let tableau = []
       tableau.push({ newKeywords: this.newKeywords })
       for (let index = 0; index < this.files.length; index++) {
@@ -53,9 +50,10 @@ export default {
         })
       }
       var json_arr = JSON.stringify(tableau);
-      this.submitFiles(json_arr);
+      this.sendToServer(json_arr);
     },
-    submitFiles(tableau) {
+    
+    sendToServer(tableau) {
         let formData = new FormData();
         formData.append('datas', tableau);
         for( var i = 0; i < this.files.length; i++ ){
@@ -74,16 +72,18 @@ export default {
           console.log(error)
         })
     },
-
-
     createNewKeyWord () {
       if (this.newKeyword !== null && this.newKeyword !== '') {
+        //this.keyword = la liste lu en front, ajoute le mot sans refaire requte php
+        //new.keywords, mots a ajouter avec les nvelles photos requete php
         if (
           this.keywords.indexOf(this.newKeyword) < 0 &&
           this.newKeywords.indexOf(this.newKeyword) < 0
         ) {
-          this.keywords.push(this.newKeyword)
+          this.keywords.push([this.newKeyword, this.keywords.length+1])
           this.newKeywords.push(this.newKeyword)
+          console.log(this.keywords)
+          // console.log(this.newKeywords)
         }
       }
     },

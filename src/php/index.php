@@ -30,7 +30,6 @@ try {
     if (isset($_GET['action'])) {
         if ($_GET['action'] == 'getKeyWords') {
             $controller -> getKeyWordsList();
-            // echo('returned Keywords');
         }
     }
 }
