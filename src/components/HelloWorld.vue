@@ -1,11 +1,12 @@
 <template>
   <section>
-    <div class="giantCircle"></div>
-    <!-- <div class="content"> -->
+    <div class="giantCircle">
+      <div class="centerCircle">
         <router-link to="/backend" class="navItem item1">backend</router-link>
 
-          <a class="navItem item2" href="http://localhost/my-photos/src/php/index.php">Lien vers php</a>
-      <!-- </div> -->
+        <a class="navItem item2" href="http://localhost/my-photos/src/php/index.php">Lien vers php</a>
+      </div>
+    </div>
   </section>
 </template>
 
@@ -16,7 +17,7 @@ export default {
     return {
       msg: "Welcome to Your Vue.js App"
     };
-  }
+  },
 };
 </script>
 

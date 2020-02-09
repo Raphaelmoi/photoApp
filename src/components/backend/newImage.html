@@ -1,70 +1,127 @@
 <!-- <section v-bind:style="{ 'background': 'url(' + imageUrlList + ')' }" > -->
 <section>
-    <div class="giantCircle"></div>
-  <div v-html="phpResponse"></div>
-  <router-link to="/backend" class="navItem backBtn retourBtn"><i class="fas fa-arrow-circle-left fa-2x"></i>Retour</router-link>
+  <div class="giantCircle">
+    <div class="centerCircle">
+      <router-link to="/backend" class="navItem backBtn retourBtn ">
+        <i class="fas fa-arrow-circle-left backFa"></i>
+        Retour
+      </router-link>
 
-  <!-- <form action=""> -->
-  <div class="navItem item1">
-    <input
-      type="file"
-      name="file"
-      id="file"
-      ref="myFiles"
-      class="inputfile"
-      @change="uploadImgOnFront"
-      accept="image/png, image/jpeg"
-      multiple="multiple"
-    />
-    <label for="file">Importer image(s)</label>
+      <div class="navItem item1">
+        <input
+          type="file"
+          name="file"
+          id="file"
+          ref="myFiles"
+          class="inputfile"
+          @change="uploadImgOnFront"
+          accept="image/png, image/jpeg"
+          multiple="multiple"
+        />
+        <label for="file">Importer image(s)</label>
+      </div>
+
+      <a  v-if="legend.length !== 0" to="/newImage" class="navItem backBtn item7" v-on:click="deleteImg()">
+        <i class="fas fa-skull-crossbones navFa"></i>
+        <span v-if="fileIsDeleted[currentImg] === ''">
+          Supprimer cette image
+        </span>
+        <span v-else >
+          Récuperer l'image
+        </span>
+      </a>
+
+        
+      <a v-if="legend.length !== 0" class="arrowNavItem item4" v-on:click="next(-1)"> 
+        <i class="fas fa-arrow-circle-left fa-4x"></i>  
+      </a>
+
+
+      <a v-if="legend.length !== 0 " class="paginationNavItem item8">
+         {{ currentImg+1 }} / {{ legend.length }}
+        </a>
+
+      <!-- ::::::::::::::::::::::::::::::: -->
+      <!-- :::::::::::::RIGHT::::::::::::: -->
+      <!-- ::::::::::::::::::::::::::::::: -->
+      <a
+      v-if="legend.length !== 0 "
+      class="navItem right itemR1"
+        @click="onClickAddKeyword = !onClickAddKeyword"
+      >
+        Ajouter un mot-clé
+    </a>
+
+      <a v-if="legend.length !== 0" class="arrowNavItem right itemR4" v-on:click="next(1)"> 
+        <i class="fas fa-arrow-circle-right fa-4x"></i>    
+      </a>
+
+      <button
+        v-if="files.length !== 0 "
+        class="submit navItem right itemR8"
+        @click="onClicPrepareDataBeforeSending"
+      >
+        Enregistrer
+      </button>
+
+
+
+    </div>
   </div>
 
-  <div v-for="(t, indexImg) in imageUrlList" :key="t.id">
-      <div class="itemImg">
-        <img id="blah" class="currentImg" :src="t" alt="your image" />
+  <div v-html="phpResponse"></div>
 
-        <div>
-          <div class="inputBoxInfo">
-            <label for="legend">Légende</label>
-            <input type="text" name="legend" v-model="legend[indexImg]" />
-            <!-- <p> {{ legend[indexImg] }} </p> -->
-          </div>
-          <div class="inputBoxInfo">
-            <label for="description">Description (alt)</label>
-            <input type="text" name="description" v-model="description[indexImg]" />
-            <!-- <p> {{ legend[indexImg] }} </p> -->
-          </div>
-          <div class="keywordBox">
-            <div
-              v-bind:class="getClass(indexImg, keyword[1])"
-              v-for="(keyword, index) in keywords"
-              :key="keyword.id"
-              @click="addKeyWord( indexImg, keyword)"
-            >
-              {{ keyword[0] }}
-            </div>
-          </div>
+  <div v-for="(t, indexImg) in imageUrlList"  :key="t.id" :class="getClassForCurrentEl(indexImg)">
+    <div class="itemImg">
 
-          <div class="addkeyword">
+      <div v-if="fileIsDeleted[indexImg] !== ''" class="deletedItem" >
+        X
+        <br/>
+        <span style="font-size: 2rem;">photo supprimée</span>
+      </div>
+
+      <img id="imageItem" class="currentImg" :src="t" alt="your image" />
+
+      <div>
+        <div class="keywordBox">
+          <div
+            v-bind:class="getClass(indexImg, keyword[1])"
+            v-for="(keyword, index) in keywords"
+            :key="keyword.id"
+            @click="addKeyWord( indexImg, keyword)"
+          >
+            {{ keyword[0] }}
+          </div>
+        </div>
+
+        <div class="inputBoxInfo">
+          <label for="legend">Légende</label>
+          <input type="text" name="legend" v-model="legend[indexImg]" />
+          <!-- <p> {{ legend[indexImg] }} </p> -->
+        </div>
+        <div class="inputBoxInfo">
+          <label for="description">Description (alt)</label>
+          <input
+            type="text"
+            name="description"
+            v-model="description[indexImg]"
+          />
+          <!-- <p> {{ legend[indexImg] }} </p> -->
+        </div>
+        <div class="" style="position: absolute; top: 0; right:  -20%;">
+          <div v-if="onClickAddKeyword" class="addkeyword">
             <label for="newKeyword">Ajouter un mot-clé</label>
             <input type="text" v-model="newKeyword" />
             <!-- <input class="submit" type="submit" @click="createNewKeyWord" /> -->
-            <button class="submit navItem" type="submit" @click="createNewKeyWord">
+            <button class="validateAll " type="submit" @click="createNewKeyWord">
               valider
             </button>
           </div>
+
         </div>
       </div>
+    </div>
   </div>
-
-
-  <button
-    v-if="files.length !== 0 "
-    class="validateAll"
-    @click="onClicPrepareDataBeforeSending"
-  >
-    Enregistrer
-  </button>
 
   <!-- </form> -->
 </section>

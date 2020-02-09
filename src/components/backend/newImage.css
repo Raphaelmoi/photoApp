@@ -1,3 +1,6 @@
+section {
+  z-index: -2;
+}
 .inputfile {
   width: 0.1px;
   height: 0.1px;
@@ -22,12 +25,27 @@
   /* background-color: #2286c3; */
 }
 .addkeyword {
-  margin: 10px;
+  position: relative;
+  /* margin: 10px; */
+  top: 10vh;
+  right: 10vw;
+  background-color: whitesmoke;
+  border-radius: 1rem;
+  padding: 0.5rem 1rem;
+}
+.addkeyword label {
+  color: black;
+  margin-right: 1rem;
+}
+.addkeyword input {
+  padding-left: 0.4rem;
+  margin-right: 1rem;
+  outline: none;
 }
 .submit {
-  position: absolute;
+  /* position: absolute;
   top: 80vh;
-  right: 14vw;
+  right: 14vw; */
   /* padding: 8px; */
   background-color: transparent;
   color: white;
@@ -39,17 +57,23 @@
   height: 30px;
   border-radius: 8px;
 }
-
+.containerImage {
+  /* background-color: royalblue; */
+  width: 60vw;
+  margin: auto;
+  z-index: -1;
+  position: relative;
+}
 .currentImg {
-  /* width: 400px; */
+  width: 100%;
   height: 50vh;
   object-fit: contain;
   /* padding: 10px; */
 }
 
 .itemImg {
-  position: relative;
-  z-index: 110;
+  /* position: relative; */
+  /* z-index: 110; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -61,11 +85,12 @@
   display: flex;
   flex-direction: column;
   flex: 2;
-  margin: 0 30%;
+  /* margin: 0 30%; */
 }
 .inputBoxInfo {
   display: flex;
   align-items: center;
+  margin: 0 30%;
 }
 .inputBoxInfo label {
   flex: 1;
@@ -78,14 +103,16 @@
   margin: 10px;
   background-color: rgba(100, 100, 100, 0);
   border: none;
-  border-bottom: 2px white solid;;
+  border-bottom: 2px white solid;
   color: white;
+  outline: none;
 }
 .keywordBox {
   /* background-color: white; */
   display: flex;
   justify-content: center;
-  margin: 20px;
+  /* margin: 20px; */
+  margin: 1% 10%;
   flex-wrap: wrap;
 }
 section {
@@ -126,5 +153,69 @@ label {
 }
 .validateAll:hover {
   background-color: #00867d;
+  color: white;
+}
+.arrowNavItem {
+  position: absolute;
+  transition: all 0.8s ease;
+}
+.arrowNavItem:hover {
+  color: #00867d;
+  text-shadow: 0px 0px 20px white;
+}
+
+.paginationNavItem {
+  font-size: 1.5rem;
+  font-weight: bolder;
+  position: absolute;
+  padding: 1rem 2rem;
+  text-decoration: none;
+  color: white;
+  border-bottom: 2px white solid;
+  border-top: 2px white solid;
+  border-radius: 50%;
+  white-space: nowrap;
+  transition: all 1s ease;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.paginationNavItem:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  /* box-shadow: 0 0 0 3px white; */
+  /* border-bottom: 1px white solid;
+  border-top: 3px white solid; */
+  transition: all 1s ease;
+}
+.keywordRitem1 {
+  top: 0vh;
+  right: 2vw;
+}
+.keywordRitem2 {
+  top: 28vh;
+  right: 1vw;
+}
+.hide {
+  display: none;
+}
+
+.navFa {
+  font-size: 1.4em;
+  padding: 0.5rem;
+  background-color: tomato;
+  border-radius: 50%;
+  margin-right: 1rem;
+}
+
+.deletedItem {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(255,10,10,0.3);
+  font-size: 8vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   color: white;
 }
