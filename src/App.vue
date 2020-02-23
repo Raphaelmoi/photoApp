@@ -7,23 +7,10 @@
 </template>
 
 <script>
+
 export default {
   name: 'App',
-  biggerCircle: false,
-  mounted () {
-      // this.$el.querySelectorAll('.navItem').forEach( (button) => {
-      // button.addEventListener('click', (e) => {
-      //   this.biggerCircle = !this.biggerCircle;
-      //   if(this.biggerCircle) {
-      //     // button.setAttribute('right', '100%')
-      //     // document.documentElement.style.setProperty('--circle-radius', '50vw');
-      //   }else {
-      //     console.log('false')
-      //     document.documentElement.style.setProperty('--circle-radius', '40vw');
-      //   }
-      // })
-      // } );
-    },
+
 }
 </script>
 
@@ -32,13 +19,12 @@ export default {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 :root {
   --circle-radius: 40vw;
   --circle-diameter: calc(var(--circle-radius) * 2);
+  --bkg-color: #1c313a;
 }
 .fade-enter-active, .fade-leave-active {
   transition: opacity .5s;
@@ -53,9 +39,8 @@ export default {
 }
 .fade-enter .navItem, .fade-leave-to .navItem /* .fade-leave-active below version 2.1.8 */ {
   transform: unset;
+  opacity: 0;
 }
-
-
 body {
   margin: 0;
   padding: 0;
@@ -63,6 +48,16 @@ body {
   height: 100%;
   background-color: black;
   overflow: hidden;
+}
+.myBody {
+  background-color: var(--bkg-color);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: all 2s ease;
+  z-index: -2;
 }
 a {
   color: white;
@@ -77,24 +72,20 @@ a {
   border-radius: 50%;
   border: 10px #cfd8dc solid;
   box-shadow: 0 0 5rem #cfd8dc, inset 0 0 5rem #cfd8dc;
-  transition: all 1s ease;
-
+  transition: all 2s ease;
+  z-index: -1;
 }
-
 .centerCircle {
   position: absolute;
   top: 50%;
   left: 50%;
-  /* background: red; */
   width: 30px;
-  height: 30px;
+  height: 1px;
   transform: translate(-50%, -50%);
 }
 .backBtn {
   padding: 0 1rem 0 0 !important;
-  /* border-color: #aaa !important;  */
   background-color: rgba(0, 0, 0, 0) !important;
-  /* padding: 0.3rem 1rem 0.3rem 0.3rem !important; */
 }
 .navItem {
   position: absolute;
@@ -110,9 +101,6 @@ a {
   align-items: center;
   white-space: nowrap;
   background-color: rgba(0, 0, 0, 0.5);
-  
-  /* background-color: rgba(255, 255, 255, 0.9); */
-
 }
 
 .navItem:hover {
@@ -179,7 +167,24 @@ a {
 .itemR8 {
    transform: rotate(24deg) translate(var(--circle-radius)) rotate(-24deg);
 }
+.arrowUp {
+  position: absolute;
+  transform: rotate(-30deg) translate(var(--circle-radius)) rotate(30deg);
+  color: white;
 
+}
+.arrowDown{
+  position: absolute;
+  color: white;
+  transform: rotate(30deg) translate(var(--circle-radius)) rotate(-30deg);
+}
+.arrowDown i, .arrowUp i{
+  border: 2px #2e805b solid;
+  cursor: pointer;
+}
+.arrowUp:hover i, .arrowDown:hover i {
+  box-shadow: 0 0 1rem #cfd8dc;
+}
 .backFa {
   font-size: 2em;
   border-radius: 50%;
@@ -190,5 +195,11 @@ a {
    padding: 0;
    font-size: 1.4em !important;
    margin-right: 0.3rem;
+ }
+ .hide{
+   display: none;
+ }
+ .pointer {
+   cursor: pointer;
  }
 </style>

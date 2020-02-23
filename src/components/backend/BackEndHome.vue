@@ -1,7 +1,6 @@
 <template>
-  <section>
+  <section class="myBody">
     <div class="giantCircle">
-
 
       <div class="centerCircle" >
         
@@ -15,7 +14,7 @@
       </router-link>
 
         <router-link to="/newImage" class="navItem item1">Ajouter des images</router-link>
-        <router-link to="/newImage" class="navItem item2">Voir les images</router-link>
+        <router-link to="/AllImages" class="navItem item2">Voir les images</router-link>
         <router-link to="/newImage" class="navItem item3">Nouvel article</router-link>
         <router-link to="/newImage" class="navItem item4">Voir les articles</router-link>
         <router-link to="/newImage" class="navItem item5">autre ...</router-link>
@@ -44,12 +43,10 @@ export default {
 
   data() {
     return {
-      successMsg: 'ezezez',
-
+      successMsg: 'a',
     };
   },
   mounted() {
-    // this.biggerCircle = false;
   },
   methods: {}
   
@@ -57,14 +54,5 @@ export default {
 </script>
 
 <style scoped>
-section {
-  background-color: #1c313a;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  transition: all 2s ease;
-}
 
 </style>

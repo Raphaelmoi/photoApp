@@ -12,45 +12,56 @@ class Controller
     {
         require 'model/'.$classname.'.php';
     }
-    // function listPosts() {
-    //     $postManager = new PostManager();
-    //     $uticontroller = new UtiController();
-    //     $reponse = $postManager -> getPosts();
-    //     require('view/frontend/affichageAccueil.php');
-    // }
-    function getKeyWordsList(){
-        $postManager = new PostManager();
-        $result = $postManager -> getKeywords();
-        echo json_encode($result);
+
+    function updateDiaporama($imageArray, $keywordArray){
+        $updateManager = new UpdateManager();
+
+        $result = $updateManager -> updateImageTable($imageArray);
+
+        $resultb = $updateManager -> updateKeywordTable($keywordArray);
+  
+        echo('successcontroller');
         return $result;
     }
 
+    function getKeyWordsList(){
+        $getManager = new GetManager();
+        $result = $getManager -> getKeywords();
+        echo json_encode($result);
+        return $result;
+    }
+    function getImagesDatas(){
+        $getManager = new GetManager();
+        $result = $getManager -> getImageTable();
+        echo json_encode($result);
+        return $result;
+    }
     function uploadDatas($datas){
-
         $postManager = new PostManager();
-
-        $totalNewKeyWord = count($datas[0]['newKeywords']);
+        //add new keyword
+        $qttNewKW = count($datas[0]['newKeywords']);
+        if ($qttNewKW > 0) {
+            for ($i=0; $i < $qttNewKW ; $i++) { 
+                $sendNewKeyword = $postManager -> addNewKeyword($datas[0]['newKeywords'][$i]);
+            }
+        }
         $totalNewImages = count($datas);
-        // var_dump($totalNewImages);
         //start at 1 because 0 is newkeyword
         for ($i=1; $i < $totalNewImages ; $i++) { 
+            // fil table imageDatas
             $send = $postManager -> postImgDatas( 
                 $datas[$i]['name'],
                 $datas[$i]['description'],
                 $datas[$i]['legend']
             );
-
+            // fil table keyword
             $totalSelectedKeyword = count($datas[$i]['keyword']);
             for ($j=0; $j < $totalSelectedKeyword; $j++) { 
                 $post = $postManager -> addImgNameToSelectedKeyword( $datas[$i]['keyword'][$j],  $datas[$i]['name'] );
             }
-            
         }
 
-        // $datas[0]['newKeywords']
     }
-
-
 
     function uploadImg(){
         $accepted_origins = array("https://localhost");
@@ -72,7 +83,6 @@ class Controller
                     }
                 }
                 // Accept upload if there was no origin, or if it is an accepted origin
-                // $filetowrite =  $imageFolder . 'baba.jpg';
                 $filetowrite =  $imageFolder . $temp['name'][$i];
                 move_uploaded_file($temp['tmp_name'][$i],$filetowrite);  
                 // Respond to the successful upload with JSON.

@@ -1,65 +1,82 @@
 <?php
-require_once("model/Manager.php"); 
+require_once("model/Manager.php");
 
-class PostManager extends Manager 
+class PostManager extends Manager
 {
-    public function postImgDatas($title, $alt, $legend){
+
+    public function addNewKeyword($newKeyword){
         $bdd = $this->dbConnect();
-        $req = $bdd->prepare('INSERT INTO imagedatas( title, alt, legend) VALUES( :title , :alt, :legend)');
-        $req->execute(array(
-                    'title' => $title,
-                    'alt' => $alt,
-                    'legend' => $legend
+
+            $req = $bdd->prepare('INSERT INTO keyword(keywords) VALUES( :keywords)');
+                $req->execute(array(
+                    'keywords' => $newKeyword
                 ));
-        return $req;
+            return $req;
     }
-
-
-    public function getKeywords(){
+    public function postImgDatas($title, $alt, $legend)
+    {
         $bdd = $this->dbConnect();
-        $req = $bdd->prepare('SELECT id, keywords, imageName FROM keyword');
-        $req->execute();
-        $result = $req->fetchAll();
-        return $result;
+        $isOnDb = $bdd->query("SELECT * FROM imagedatas WHERE title='" . $title . "'");
+        $rows = $isOnDb->fetchAll(); 
+        $n = count($rows);
+        // if we dont find the name of the image on the table
+        if($n == 0) {
+            // we add new image name and caraceristics
+            $req = $bdd->prepare('INSERT INTO imagedatas( title, alt, legend) VALUES( :title , :alt, :legend)');
+            $req->execute(array(
+                'title' => $title,
+                'alt' => $alt,
+                'legend' => $legend
+            ));
+            return $req;
+        } 
     }
-    public function getKeywordsContent($keywordId){
+
+    // function necessaire pour addImgNameToSelectedKeyword
+    public function getKeywordsContent($kword)
+    {
         $bdd = $this->dbConnect();
-        $req = $bdd->prepare('SELECT imageName FROM keyword  WHERE id = '. $keywordId );
-        $req->execute();
-        $result = $req->fetch();
-        return $result;
+        $isOnDb = $bdd->query("SELECT imageName FROM keyword WHERE keywords='" . $kword . "'");
+        $rows = $isOnDb->fetchAll(); 
+        return $rows[0]['imageName'];
     }
-
-    public function addImgNameToSelectedKeyword($keyId, $imageName ){
-        $keywordId = (int)$keyId;
-
-        $test = $this -> getKeywordsContent($keywordId);
-        var_dump($test['imageName']);
-        if($test['imageName'] == null){
-            $test = $imageName;
+    public function addImgNameToSelectedKeyword($kword, $imageName)
+    {
+        $dbImageName = $this->getKeywordsContent($kword);
+        $bdd = $this->dbConnect();
+        // var_dump($dbImageName);
+        //concatene les noms d'image
+        // if (empty($dbImageName)) {
+        if ($dbImageName == '') {
+            $dbImageName = $imageName;
+            $req = $bdd->query("UPDATE keyword SET imageName = '" . $dbImageName . "' WHERE keywords = '" . $kword . "'" );
+            $req = $bdd->query("UPDATE keyword SET main_image = '" . $dbImageName . "' WHERE keywords = '" . $kword . "'" );
+            return $req;
+        } else {
+            // verifie si limage nest pas deja presente
+            if(strpos($dbImageName, $imageName) === false){
+                $dbImageName =  $dbImageName . '|' .  $imageName;
+                $req = $bdd->query("UPDATE keyword SET imageName = '" . $dbImageName . "' WHERE keywords = '" . $kword . "'" );
+                return $req;
+            } 
         }
-        else {
-            $test = $test['imageName'] . $imageName;
-        }
-        $bdd = $this->dbConnect();
-
-        $req = $bdd->query("UPDATE keyword SET imageName = '$test' WHERE id = $keywordId;");
-        return $req;
     }
 
 
+
+
+    // ANCIEN SITE
 
     //give all the posts for home page and connected home page
     public function getPosts($sort = 0)
     {
         if ($sort == 1) {
             $order = "DESC";
-        }
-        else
-           $order = "";
+        } else
+            $order = "";
 
         $bdd = $this->dbConnect();
-        $reponse = $bdd->query('SELECT id, titre, contenu, url, DATE_FORMAT(date_creation, \'%d/%m/%Y \') AS date_creation_fr FROM billets ORDER BY id '.$order);
+        $reponse = $bdd->query('SELECT id, titre, contenu, url, DATE_FORMAT(date_creation, \'%d/%m/%Y \') AS date_creation_fr FROM billets ORDER BY id ' . $order);
         return $reponse;
     }
     //give posts per 10 for the aside view
@@ -71,7 +88,7 @@ class PostManager extends Manager
             $offset *= 10;
         };
         $bdd = $this->dbConnect();
-        $reponse = $bdd->query('SELECT id, titre, contenu, url, DATE_FORMAT(date_creation, \'%d/%m/%Y à %Hh%imin\') AS date_creation_fr FROM billets ORDER BY id LIMIT '.$offset.',10');
+        $reponse = $bdd->query('SELECT id, titre, contenu, url, DATE_FORMAT(date_creation, \'%d/%m/%Y à %Hh%imin\') AS date_creation_fr FROM billets ORDER BY id LIMIT ' . $offset . ',10');
         return $reponse;
     }
     //give only one post
@@ -84,14 +101,15 @@ class PostManager extends Manager
         return $article;
     }
     //publishing a new post
-    public function postPost($titre, $contenu, $url){
+    public function postPost($titre, $contenu, $url)
+    {
         $bdd = $this->dbConnect();
         $req = $bdd->prepare('INSERT INTO billets( titre, contenu, url, date_creation) VALUES( :titre , :contenu, :url, NOW())');
         $req->execute(array(
-                    'titre' => $titre,
-                    'contenu' => $contenu,
-                    'url' => $url
-                ));
+            'titre' => $titre,
+            'contenu' => $contenu,
+            'url' => $url
+        ));
         return $req;
     }
     //updating a post IF AN IMAGE IS SPECIFIED
@@ -109,7 +127,8 @@ class PostManager extends Manager
         return $req;
     }
     //delete a post
-    public function deletePost($id){
+    public function deletePost($id)
+    {
         $bdd = $this->dbConnect();
         $delete = $bdd->query("DELETE FROM billets WHERE id = $id; ");
     }
@@ -120,5 +139,4 @@ class PostManager extends Manager
         $count = $bdd->query('SELECT COUNT(*) FROM billets')->fetchColumn();
         return $count;
     }
-
 }

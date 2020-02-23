@@ -4,6 +4,8 @@ import HelloWorld from '@/components/HelloWorld'
 import BackEndHome from '@/components/backend/BackEndHome.vue'
 import LogIn from '@/components/logIn.vue'
 import NewImage from '@/components/backend/newImage.vue'
+import AllImages from '@/components/backend/allImagesView/allImagesView.vue'
+import imageByCategory from '@/components/backend/allImagesView/imageByCategory.vue'
 
 Vue.use(Router)
 
@@ -29,6 +31,16 @@ export default new Router({
       path: '/newImage',
       name: 'NewImage',
       component: NewImage
+    },
+    {
+      path: '/allImages',
+      name: 'AllImages',
+      component: AllImages
+    },
+    {
+      path: '/image/:id',
+      name: 'imageByCategory',
+      component: imageByCategory
     }
-  ]
+  ] 
 })

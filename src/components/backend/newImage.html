@@ -1,8 +1,7 @@
-<!-- <section v-bind:style="{ 'background': 'url(' + imageUrlList + ')' }" > -->
-<section>
+<section class="myBody">
   <div class="giantCircle">
     <div class="centerCircle">
-      <router-link to="/backend" class="navItem backBtn retourBtn ">
+      <router-link to="/backend" class="navItem backBtn retourBtn">
         <i class="fas fa-arrow-circle-left backFa"></i>
         Retour
       </router-link>
@@ -21,39 +20,50 @@
         <label for="file">Importer image(s)</label>
       </div>
 
-      <a  v-if="legend.length !== 0" to="/newImage" class="navItem backBtn item7" v-on:click="deleteImg()">
+      <a
+        v-if="legend.length !== 0"
+        to="/newImage"
+        class="navItem backBtn item7"
+        v-on:click="deleteImg()"
+      >
         <i class="fas fa-skull-crossbones navFa"></i>
         <span v-if="fileIsDeleted[currentImg] === ''">
           Supprimer cette image
         </span>
-        <span v-else >
+        <span v-else>
           Récuperer l'image
         </span>
       </a>
-
-        
-      <a v-if="legend.length !== 0" class="arrowNavItem item4" v-on:click="next(-1)"> 
-        <i class="fas fa-arrow-circle-left fa-4x"></i>  
+      <!-- LEFT NAV BUTON -->
+      <a
+        v-if="legend.length !== 0"
+        class="arrowNavItem item4"
+        v-on:click="next(-1)"
+      >
+        <i class="fas fa-arrow-circle-left fa-4x"></i>
       </a>
-
-
+      <!-- INDEX OF IMAGE -->
       <a v-if="legend.length !== 0 " class="paginationNavItem item8">
-         {{ currentImg+1 }} / {{ legend.length }}
-        </a>
+        {{ currentImg+1 }} / {{ legend.length }}
+      </a>
 
       <!-- ::::::::::::::::::::::::::::::: -->
       <!-- :::::::::::::RIGHT::::::::::::: -->
       <!-- ::::::::::::::::::::::::::::::: -->
       <a
-      v-if="legend.length !== 0 "
-      class="navItem right itemR1"
+        v-if="legend.length !== 0 "
+        class="navItem right itemR1"
         @click="onClickAddKeyword = !onClickAddKeyword"
       >
         Ajouter un mot-clé
-    </a>
+      </a>
 
-      <a v-if="legend.length !== 0" class="arrowNavItem right itemR4" v-on:click="next(1)"> 
-        <i class="fas fa-arrow-circle-right fa-4x"></i>    
+      <a
+        v-if="legend.length !== 0"
+        class="arrowNavItem right itemR4"
+        v-on:click="next(1)"
+      >
+        <i class="fas fa-arrow-circle-right fa-4x"></i>
       </a>
 
       <button
@@ -63,20 +73,25 @@
       >
         Enregistrer
       </button>
-
-
-
     </div>
   </div>
 
   <div v-html="phpResponse"></div>
 
-  <div v-for="(t, indexImg) in imageUrlList"  :key="t.id" :class="getClassForCurrentEl(indexImg)">
+  <div
+    v-for="(t, indexImg) in imageUrlList"
+    :key="t.id"
+    v-bind:class="currentImg==indexImg ? 'containerImage' : 'hide'"
+  >
     <div class="itemImg">
-
-      <div v-if="fileIsDeleted[indexImg] !== ''" class="deletedItem" >
+      <!-- surcouche si la photo est supprimé -->
+      <div
+        v-if="fileIsDeleted[indexImg] !== ''"
+        class="deletedItem"
+        :key="rerenderKey"
+      >
         X
-        <br/>
+        <br />
         <span style="font-size: 2rem;">photo supprimée</span>
       </div>
 
@@ -85,7 +100,7 @@
       <div>
         <div class="keywordBox">
           <div
-            v-bind:class="getClass(indexImg, keyword[1])"
+            v-bind:class="getClass(indexImg, keyword[1], keyword[0])"
             v-for="(keyword, index) in keywords"
             :key="keyword.id"
             @click="addKeyWord( indexImg, keyword)"
@@ -97,7 +112,6 @@
         <div class="inputBoxInfo">
           <label for="legend">Légende</label>
           <input type="text" name="legend" v-model="legend[indexImg]" />
-          <!-- <p> {{ legend[indexImg] }} </p> -->
         </div>
         <div class="inputBoxInfo">
           <label for="description">Description (alt)</label>
@@ -106,18 +120,21 @@
             name="description"
             v-model="description[indexImg]"
           />
-          <!-- <p> {{ legend[indexImg] }} </p> -->
         </div>
-        <div class="" style="position: absolute; top: 0; right:  -20%;">
+
+        <div" >
           <div v-if="onClickAddKeyword" class="addkeyword">
-            <label for="newKeyword">Ajouter un mot-clé</label>
+            <label for="newKeyword" class="">Ajouter un mot-clé</label>
             <input type="text" v-model="newKeyword" />
             <!-- <input class="submit" type="submit" @click="createNewKeyWord" /> -->
-            <button class="validateAll " type="submit" @click="createNewKeyWord">
+            <button
+              class="validateAll "
+              type="submit"
+              @click="createNewKeyWord"
+            >
               valider
             </button>
           </div>
-
         </div>
       </div>
     </div>

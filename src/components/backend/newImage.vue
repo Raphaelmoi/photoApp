@@ -21,7 +21,7 @@ export default {
       onClickAddKeyword: false,
       currentImg: 0,
       fileIsDeleted: [],
-      // activeNav: true
+      rerenderKey: 0
     }
   },
   mounted : function() {
@@ -43,32 +43,34 @@ export default {
         this.fileIsDeleted.push('')
         // url list image
         this.imageUrlList.push(URL.createObjectURL(this.files[index]))
-
       }
         document.documentElement.style.setProperty('--circle-radius', '45vw');
 
     },   
     //set or unset a keyworf for an image
     addKeyWord (imgId, keyword) {
-      let id = parseInt(keyword[1]);
-      let value = this.selectedKeyWords[imgId].indexOf(id)
+      // let id = parseInt(keyword[1]);
+      let value = this.selectedKeyWords[imgId].indexOf(keyword[0])
+      console.log(value)
+
       if (value >= 0) {
         this.selectedKeyWords[imgId].splice(value, 1)
       } else {
-        this.selectedKeyWords[imgId].push(id)
+        this.selectedKeyWords[imgId].push(keyword[0])
       }
+      console.log(this.selectedKeyWords)
+
     },
 
     deleteImg(){
       if(this.fileIsDeleted[this.currentImg] === ''){
         this.fileIsDeleted[this.currentImg] = 'deleted';
-        this.next(1)
+        this.rerenderKey +=1;
       }
       else {
         this.fileIsDeleted[this.currentImg] = '';
-        //tricks to re -render the view
-        this.next(-1)
-        this.next(1)
+        //tricks to re -render the view ->see the :key
+        this.rerenderKey +=1;
       }
     },
     getKeyWordsFromServer(){
@@ -110,11 +112,13 @@ export default {
             let file = this.$refs.myFiles.files[i];
             formData.append('files[' + i + ']', file);
           }
-            
         }
+        console.log('...formData : ');
         console.log(...formData);
 
-        axios.post( this.phpLink, formData, {
+        let req = this.phpLink + '?action=newdatas'
+
+        axios.post( req, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             },
@@ -138,6 +142,7 @@ export default {
           // console.log(this.keywords)
         }
       }
+      // console.log(this.newKeywords)
       this.onClickAddKeyword = !this.onClickAddKeyword;
     },
     //Fleches
@@ -154,21 +159,14 @@ export default {
       }
     },
     //return different class name depend if a keyword is selected or not
-    getClass (imgId, id) {
+    getClass (imgId, id, categoryName) {
       id = parseInt(id);
-      if (this.selectedKeyWords[imgId].indexOf(id) >= 0) {
+      if (this.selectedKeyWords[imgId].indexOf(categoryName) >= 0) {
         return 'keyword selected'
       } else {
         return 'keyword '
       }
-    },
-    //class for the div who contain each an image and inputs
-    getClassForCurrentEl( id ){
-      if( this.currentImg == id ){
-        return 'containerImage'
-      }
-      else return 'hide'
-    },
+    }
   }
 }
 </script>
