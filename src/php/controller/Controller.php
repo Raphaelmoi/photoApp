@@ -13,12 +13,28 @@ class Controller
         require 'model/'.$classname.'.php';
     }
 
+    function deleteImage($id){
+        echo('controller');
+
+        $deleteManager = new DeleteManager();
+        $result = $deleteManager -> deleteImageById($id);
+
+        
+        return $result;
+    }
+    function deleteFullDiaporama($id, $imageArray){
+        $deleteManager = new DeleteManager();
+        $updateManager = new UpdateManager();
+
+        $result = $deleteManager -> deleteDiaporama($id);
+        $resultb = $updateManager -> downNbreUtilisationImg($imageArray);
+        return $result;
+    }
     function updateDiaporama($imageArray, $keywordArray){
         $updateManager = new UpdateManager();
 
         $result = $updateManager -> updateImageTable($imageArray);
-
-        $resultb = $updateManager -> updateKeywordTable($keywordArray);
+        $resultb = $updateManager -> updateOneKeywordTable($keywordArray);
   
         echo('successcontroller');
         return $result;
@@ -52,7 +68,8 @@ class Controller
             $send = $postManager -> postImgDatas( 
                 $datas[$i]['name'],
                 $datas[$i]['description'],
-                $datas[$i]['legend']
+                $datas[$i]['legend'],
+                $datas[$i]['qttUtillisation']
             );
             // fil table keyword
             $totalSelectedKeyword = count($datas[$i]['keyword']);

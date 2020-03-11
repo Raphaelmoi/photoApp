@@ -104,6 +104,7 @@ a {
 }
 
 .navItem:hover {
+  
   background: #2e805b;
   color: white;
   /* border: 4px gray solid; */

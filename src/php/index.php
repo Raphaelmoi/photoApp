@@ -30,6 +30,16 @@ try {
             $controller -> updateDiaporama(json_decode($_POST['imageDatas'], true), json_decode($_POST['currentKeywordDatas'], true));
             // var_dump($_POST);
         }
+        elseif ($_GET['action'] == 'deleteFullDiaporama') {
+            $controller -> deleteFullDiaporama($_POST['id'], json_decode($_POST['imageDatas'], true));
+            // var_dump($_POST);
+        }
+        elseif( $_GET['action'] == 'deleteImg') {
+            if (isset($_GET['id'])) {
+                $controller -> deleteImage($_GET['id']);
+            }
+
+        }
     }
 }
 catch(Exception $e) {

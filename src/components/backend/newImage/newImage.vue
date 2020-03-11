@@ -2,6 +2,8 @@
 <template src="./newImage.html"></template>
 
 <script>
+import phpResponse from '@/components/backend/phpresponse/phpresponse.js'
+
 const axios = require('axios')
 
 export default {
@@ -16,6 +18,7 @@ export default {
       imageUrlList: [],
       legend: [],
       description: [],
+      qttUtillisation: [],
       newKeywords: [],
       phpResponse: null,
       onClickAddKeyword: false,
@@ -24,11 +27,14 @@ export default {
       rerenderKey: 0
     }
   },
+  components: {
+    phpResponse
+  },
   mounted : function() {
     this.getKeyWordsFromServer();
   },
   destroyed : function() {
-        document.documentElement.style.setProperty('--circle-radius', '40vw');
+    document.documentElement.style.setProperty('--circle-radius', '40vw');
   },
   methods: {
 
@@ -41,17 +47,17 @@ export default {
         this.legend.push('')
         this.description.push('')
         this.fileIsDeleted.push('')
+        this.qttUtillisation.push(0)
         // url list image
         this.imageUrlList.push(URL.createObjectURL(this.files[index]))
       }
         document.documentElement.style.setProperty('--circle-radius', '45vw');
-
     },   
-    //set or unset a keyworf for an image
+    //set or unset a keyword for an image
     addKeyWord (imgId, keyword) {
       // let id = parseInt(keyword[1]);
       let value = this.selectedKeyWords[imgId].indexOf(keyword[0])
-      console.log(value)
+      console.log( this.selectedKeyWords[imgId])
 
       if (value >= 0) {
         this.selectedKeyWords[imgId].splice(value, 1)
@@ -59,7 +65,6 @@ export default {
         this.selectedKeyWords[imgId].push(keyword[0])
       }
       console.log(this.selectedKeyWords)
-
     },
 
     deleteImg(){
@@ -96,7 +101,8 @@ export default {
               name: this.files[index].name,
               legend: this.legend[index],
               description: this.description[index],
-              keyword: this.selectedKeyWords[index]
+              keyword: this.selectedKeyWords[index],
+              qttUtillisation: this.selectedKeyWords[index].length
             })
           }
       }
@@ -148,8 +154,6 @@ export default {
     //Fleches
     next(direction) {
       let nextvalue = this.currentImg + (direction);
-      console.log(this.currentImg)
-      console.log(nextvalue)
       if( nextvalue >= this.legend.length ){
         this.currentImg = 0;
       }else if ( nextvalue < 0) {

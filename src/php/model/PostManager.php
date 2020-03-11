@@ -13,7 +13,7 @@ class PostManager extends Manager
                 ));
             return $req;
     }
-    public function postImgDatas($title, $alt, $legend)
+    public function postImgDatas($title, $alt, $legend, $nbreUtilisation)
     {
         $bdd = $this->dbConnect();
         $isOnDb = $bdd->query("SELECT * FROM imagedatas WHERE title='" . $title . "'");
@@ -22,11 +22,12 @@ class PostManager extends Manager
         // if we dont find the name of the image on the table
         if($n == 0) {
             // we add new image name and caraceristics
-            $req = $bdd->prepare('INSERT INTO imagedatas( title, alt, legend) VALUES( :title , :alt, :legend)');
+            $req = $bdd->prepare('INSERT INTO imagedatas( title, alt, legend, nbre_utilisation) VALUES( :title , :alt, :legend, :nbre_utilisation)');
             $req->execute(array(
                 'title' => $title,
                 'alt' => $alt,
-                'legend' => $legend
+                'legend' => $legend,
+                'nbre_utilisation' => $nbreUtilisation
             ));
             return $req;
         } 

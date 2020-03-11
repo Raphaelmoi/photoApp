@@ -3,9 +3,11 @@ import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 import BackEndHome from '@/components/backend/BackEndHome.vue'
 import LogIn from '@/components/logIn.vue'
-import NewImage from '@/components/backend/newImage.vue'
+import NewImage from '@/components/backend/newImage/newImage.vue'
 import AllImages from '@/components/backend/allImagesView/allImagesView.vue'
-import imageByCategory from '@/components/backend/allImagesView/imageByCategory.vue'
+import imageByCategory from '@/components/backend/allImagesView/imageByCategory/imageByCategory.vue'
+import keywordComponent from '@/components/backend/allImagesView/imageByCategory/keywordsComp.vue'
+
 
 Vue.use(Router)
 

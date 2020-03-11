@@ -1,0 +1,303 @@
+.mainContainer {
+  background: var(--bkg-color);
+  position: absolute;
+}
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  /* padding-left: 12%; */
+  height: 7vh;
+}
+h1 {
+  color: white;
+  font-size: 2rem;
+  margin: 0;
+}
+.retour {
+  top: 8px;
+  left: 8px;
+}
+.imgSquareContainer {
+  width: 100%;
+  height: 100%;
+}
+.imgSquare {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  width: 100%;
+  max-height: 93vh;
+  /* background: teal; */
+  overflow-y: auto;
+}
+.imgSquare article {
+  width: 18%;
+  height: 30vh;
+  margin: 1%;
+  object-fit: cover;
+  overflow: hidden;
+  position: relative;
+}
+.imgSquare img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top left;
+  transition: all 3s ease;
+  cursor: grab;
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
+}
+.imgSquare article:active {
+  cursor: grabbing;
+  cursor: -webkit-grabbing;
+  cursor: -moz-grabbing;
+  box-shadow: 0 0 0 3px white;
+  opacity: 0.2;
+  /* transition: all 1s ease-in */
+}
+.imgSquare img:hover {
+  object-position: bottom right;
+  transition: all 1s ease;
+}
+.imgSquare > div:hover .imgPanel {
+  display: flex;
+}
+.imgPanel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 20%;
+  background: rgba(255, 255, 255, 0.6);
+  /* display: flex; */
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  display: none;
+  transition: all 1s ease;
+}
+.imgPanel i {
+  margin: 8px 0;
+}
+.selectedImg {
+  /* border: 2px white solid; */
+  box-shadow: 0 0 0 5px lightseagreen;
+}
+.missingAlt {
+  box-shadow: 0 0 0 1px tomato;
+}
+.active {
+  color: cadetblue;
+}
+.imgAlone {
+  display: flex;
+  height: 93vh;
+}
+.imgSide {
+  /* flex: 3; */
+  width: 75%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+.imgSide img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+}
+.imgSide b {
+  color: aliceblue;
+  font-size: 2rem;
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+}
+.navImg {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #FFFFFFcc;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all .3s ease;
+}
+.navImg:hover {
+  color: #FFF;
+  transition: all 1s ease;
+
+}
+.navLeft {
+  left: 2rem;
+}
+.navRight {
+  right: 2rem;
+}
+.imgAlone aside {
+  width: 25%;
+  background: white;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 1rem;
+  position: relative;
+}
+.fas {
+  cursor: pointer;
+}
+
+.btnSettings {
+  position: relative;
+}
+.btnSettings>a {
+ transition: all .3s ease;
+}
+.btnSettings>a:hover {
+  color: tomato;
+  transition: all 1s ease;
+}
+.panel {
+  position: absolute;
+  top: 0;
+  right: -100%;
+  width: 350px;
+  /* width: 10vw;
+    height: 10vh; */
+  border-radius: 8px;
+  /* border: 1px black solid; */
+  border-top-right-radius: 0;
+  background-color: white;
+  margin: 30px;
+  z-index: 1;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-around;
+}
+.panel a {
+  color: black;
+}
+.arrow-up {
+  position: absolute;
+  right: 5px;
+  top: -10px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid white;
+}
+.controlBar {
+  /* background-color: rgb(17, 122, 117); */
+  border-left: 8px rgb(17, 122, 117) solid;
+  position: absolute;
+  font-weight: bold;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  cursor: grab;
+}
+.controlBar:active {
+  cursor: grabbing;
+  border-left: 12px rgb(17, 122, 117) solid;
+}
+.myAside h4,
+.myAside h5,
+.myAside p {
+  margin: 0;
+}
+.inputBox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.inputBox p {
+  flex: 3;
+  /* background-color: lightblue; */
+  height: 100%;
+}
+.inputBox button {
+  /* flex: 1; */
+  border: none;
+  background: cadetblue;
+  color: white;
+  font-size: 1rem;
+  padding: 0.8rem;
+  cursor: pointer;
+}
+.inputBox input {
+  flex: 3;
+  padding: 0.5rem 0.4rem;
+  margin-right: 4px;
+  border: 2px cadetblue solid;
+  background-color: transparent;
+  color: rgb(27, 77, 74);
+  font-size: 0.9rem;
+}
+.firstPicture {
+  /* background-color: lightslategray; */
+  color: black;
+  /* width: fit-content; */
+  padding: 0.5rem;
+  text-align: center;
+  border: 1px cadetblue solid;
+  border-radius: 4px;
+  margin: 0.5rem 0;
+  cursor: pointer;
+  transition: all .3s ease;
+
+}
+.firstPicture:hover {
+  background-color: cadetblue;
+  transition: all .3s ease;
+
+}
+.activeBtn {
+  background-color: cadetblue;
+  color: white;
+}
+.validationBtn {
+  background: white;
+  color: cadetblue;
+  font-size: 1rem;
+  border: 2px cadetblue solid;
+  border-radius: 5px;
+  padding: 0.5rem;
+}
+h1 .fa-pen {
+  font-size: 0.6em!important;
+  color: #ccc;
+}
+button .fa-pen {
+  
+}
+.titleInput {
+  border: none;
+  border-bottom: 2px white solid;
+  background: none;
+  font-size: 1.3rem;
+  color: white;
+}
+.titleInput:focus 
+{
+  color: black;
+  background-color: #ffffffdd;
+}
+.deleteImage {
+  transition: all .3s ease;
+}
+.deleteImage:hover {
+  background-color: tomato;
+  /* color: white; */
+  transition: all 1s ease;
+}
+.barBtn {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 40px; 
+  padding:  0 1rem 0 0;
+  position: relative;
+  cursor: pointer;
+}

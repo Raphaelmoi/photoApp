@@ -12,7 +12,7 @@ class GetManager extends Manager
     }
     public function getImageTable(){
         $bdd = $this->dbConnect();
-        $req = $bdd->prepare('SELECT id, title, alt, legend FROM imagedatas');
+        $req = $bdd->prepare('SELECT id, title, alt, legend, nbre_utilisation FROM imagedatas');
         $req->execute();
         $result = $req->fetchAll();
         return $result;

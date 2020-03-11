@@ -43,7 +43,7 @@
         <i class="fas fa-arrow-circle-left fa-4x"></i>
       </a>
       <!-- INDEX OF IMAGE -->
-      <a v-if="legend.length !== 0 " class="paginationNavItem item8">
+      <a v-if="legend.length !== 0" class="paginationNavItem item8">
         {{ currentImg+1 }} / {{ legend.length }}
       </a>
 
@@ -75,8 +75,7 @@
       </button>
     </div>
   </div>
-
-  <div v-html="phpResponse"></div>
+  <phpResponse :reponse="phpResponse" ></phpResponse>
 
   <div
     v-for="(t, indexImg) in imageUrlList"
@@ -122,7 +121,7 @@
           />
         </div>
 
-        <div" >
+        <div>
           <div v-if="onClickAddKeyword" class="addkeyword">
             <label for="newKeyword" class="">Ajouter un mot-clé</label>
             <input type="text" v-model="newKeyword" />
