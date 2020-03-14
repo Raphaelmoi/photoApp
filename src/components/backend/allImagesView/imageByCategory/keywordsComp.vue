@@ -16,20 +16,21 @@
 </template>
 
 <script>
-const axios = require("axios");
 
 export default {
   name: "keywordComponent",
-  data() {
-    return {};
-  },
-  props: ["keywords", "imgname", "diapoName"],
 
+  props: ["keywords", "imgname", "diapoName"],
+  data() {
+      return {
+        datachanged: false
+      }
+  },
   methods: {
     //set or unset a keyword for an image
     addKeyWord(index) {
       let imgList = this.keywords[index][2];
-      console.log(this.keywords[index]);
+      // console.log(this.keywords[index]);
       let isCurrentCategory = false;
       if (this.keywords[index][0] == this.diapoName) {
         isCurrentCategory = true;
@@ -59,6 +60,8 @@ export default {
         console.log(this.keywords);
         // alert('l-actionajoute l-image au diaporama' );
       }
+      this.datachanged=true;
+      this.$emit('isModified')
     },
     //return different class name depend if a keyword is selected or not
     getKeywordClass(imagesList, diapo) {

@@ -10,7 +10,7 @@
     <a
       v-if="dataToSendToServer"
       class="barBtn"
-      @click="sendUpdatedDatas"
+      @click="updateThisDiapo"
     >
       <i class="fas fa-check-circle backFa" style="font-size: 1.6em;"></i>
       Validez les modifs
@@ -28,16 +28,6 @@
       v-model="currentKeywordDatas[0]"
       value="currentKeywordDatas[0]"
     />
-
-    <!-- <a
-    v-if="dataToSendToServer"
-    class="validationBtn"
-    @click="sendUpdatedDatas"
-  >
-    Validez les modifications</a
-  > -->
-
-    <div>
       <a v-bind:class="category==0 ? 'active' : ''" v-on:click="category = 0">
         <i class="fas fa-th fa-2x"></i>
       </a>
@@ -67,111 +57,32 @@
   </div>
   
   <phpResponse :reponse="phpResponse" ></phpResponse>
-  <!-- https://github.com/SortableJS/Vue.Draggable -->
-  <draggable v-model="imageDatas" v-if="category == 0" @end="dataToSendToServer=true">
-    <transition-group class="imgSquare">
-      <article
-        v-for="(image, index) in  imageDatas"
-        v-bind:key="index"
-        v-on:click="zoomOnImg(index)"
-        :class="getImgSqureClass(index)"
-      >
-        <img
-          :src="require('../../../../public/images/'+ imageDatas[index].title)"
-        />
-        <div class="imgPanel">
-          <input type="checkbox" />
-          <i class="fas fa-retweet fa-2x"></i>
-          <i class="fas fa-trash fa-2x"></i>
-        </div>
-      </article>
-    </transition-group>
-  </draggable>
 
-  <article class="imgAlone" v-if="category == 1" v-on:mouseup="toggleFalse">
-    <div class="imgSide">
-      <b v-on:click="category = 0" class="pointer">X</b>
-      <div class="navImg navLeft" v-on:click="navDiapo(-1)">
-        <i class="fas fa-arrow-circle-left fa-3x"></i>
-      </div>
-      <div class="navImg navRight" v-on:click="navDiapo(1)">
-        <i class="fas fa-arrow-circle-right fa-3x"></i>
-      </div>
+  <listimgVueComp 
+    v-if="category == 0" 
+    v-on:setCategory="category=1"
+    :imgList="imageDatas" 
+    :currentTitle="currentKeywordDatas[3]" 
+    v-on:setCurrentImg="setCurrentImgFromComponent"
+    v-on:setImgOrderFromComponent="setImgOrderFromComponent"
+    v-on:ismodified="dataToSendToServer=true"
+    >
+  </listimgVueComp>
 
-      <img
-        v-for="(image, index) in imageDatas"
-        :key="image.id"
-        :src="require('../../../../public/images/'+ imageDatas[index].title)"
-        v-bind:class="currentImg==index ? '' : 'hide'"
-      />
-    </div>
 
-    <aside class="myAside" v-on:mouseup="toggleFalse">
-      <div
-        class="controlBar"
-        v-on:mousedown="toggleTrue"
-        v-on:mouseup="toggleFalse"
-        v-on:mousemove="grabTheBar"
-      ></div>
-      <h5>Nom de l'image :</h5>
-      <h4>{{ imageDatas[currentImg].title }}</h4>
-      <h5>Legende :</h5>
-      <div class="inputBox">
-        <p v-if="!dataToSendToServer">{{ imageDatas[currentImg].legend }}</p>
-        <input
-          v-if="dataToSendToServer"
-          type="text"
-          v-model="imageDatas[currentImg].legend"
-          value="imageDatas[currentImg].legend"
-        />
-        <button
-          v-if="!dataToSendToServer"
-          v-on:click="dataToSendToServer = true"
-        >
-          <i class="fas fa-pen"></i>
-
-        </button>
-      </div>
-
-      <h5>Balise alt</h5>
-      <div class="inputBox">
-        <p v-if="!dataToSendToServer">{{ imageDatas[currentImg].alt }}</p>
-        <input
-          v-if="dataToSendToServer"
-          type="text"
-          v-model="imageDatas[currentImg].alt"
-          value="imageDatas[currentImg].alt"
-        />
-        <button
-          v-if="!dataToSendToServer"
-          v-on:click="dataToSendToServer = true"
-        >
-          <i class="fas fa-pen"></i>
-        </button>
-      </div>
-
-      <div
-        :key="fakerender"
-        v-bind:class="currentKeywordDatas[3]== imageDatas[currentImg].title  ? 'firstPicture activeBtn' : 'firstPicture'"
-        v-on:click="currentKeywordDatas[3] = imageDatas[currentImg].title; fakerender+=1"
-      >
-        <p>Image à la une</p>
-      </div>
-      <div
-        class="firstPicture deleteImage"
-        style="border-color:tomato;"
-        @click="deleteImgFromDiapo(currentImg)"
-      >
-        <p>
-          <i class="fas fa-trash"></i>Supprimer cette image dans ce diaporama
-        </p>
-      </div>
-      <keywordComponent  
-        :keywords="keywords"
-        :imgname="imageDatas[currentImg].title" 
-        :diapoName="currentKeywordDatas[0]">
-      </keywordComponent>
-
-    </aside>
-  </article>
+  <oneImgComp
+    v-if="category == 1"
+    v-on:setCategory="category=0"
+    :listStatus="dataToSendToServer"
+    :imgList="imageDatas"
+    v-on:updateImageList="updateImageListFromComp"
+    :currentImage="currentImg" 
+    v-on:setCurrentImg="setCurrentImgFromComponent"
+    v-on:ismodified="dataToSendToServer=true"
+    :currentKWData = "currentKeywordDatas"
+    v-on:updateKeywordData= "updateKeywordDataFromComponent"
+    :allKeywords = "keywords"
+    v-on:updateAllKeywords = "updateAllKeywordsFromComponent"
+  >
+</oneImgComp>
 </section>
