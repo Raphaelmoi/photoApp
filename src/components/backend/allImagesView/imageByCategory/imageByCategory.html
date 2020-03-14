@@ -6,7 +6,6 @@
       <i class="fas fa-arrow-circle-left backFa"></i>
       Retour
     </router-link>
-
     <a
       v-if="dataToSendToServer"
       class="barBtn"
@@ -56,7 +55,7 @@
     </div>
   </div>
   
-  <phpResponse :reponse="phpResponse" ></phpResponse>
+  <phpResponse :reponse="phpResponse" v-on:resetReponse="phpResponse=''"></phpResponse>
 
   <listimgVueComp 
     v-if="category == 0" 
@@ -64,8 +63,8 @@
     :imgList="imageDatas" 
     :currentTitle="currentKeywordDatas[3]" 
     v-on:setCurrentImg="setCurrentImgFromComponent"
-    v-on:setImgOrderFromComponent="setImgOrderFromComponent"
-    v-on:ismodified="dataToSendToServer=true"
+    v-on:setImgOrder="setImgOrderFromComponent"
+    v-on:ismodified="dataToSendToServer=true" 
     >
   </listimgVueComp>
 
@@ -83,6 +82,7 @@
     v-on:updateKeywordData= "updateKeywordDataFromComponent"
     :allKeywords = "keywords"
     v-on:updateAllKeywords = "updateAllKeywordsFromComponent"
+    v-on:sendKWTableToServer = "SendFullKWTable = true"
   >
 </oneImgComp>
 </section>

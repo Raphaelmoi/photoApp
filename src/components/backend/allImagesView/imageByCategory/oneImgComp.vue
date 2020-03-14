@@ -82,7 +82,7 @@
         :keywords="keywords"
         :imgname="imageList[currentImg].title" 
         :diapoName="currentKeywordDatas[0]"
-        v-on:isModified="declareChange" 
+        v-on:isModified="$emit('sendKWTableToServer'); declareChange()" 
         >
       </keywordComponent>
 

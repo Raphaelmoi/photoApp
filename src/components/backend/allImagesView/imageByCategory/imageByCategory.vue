@@ -19,6 +19,7 @@ export default {
       imageDatas: [],
       settingPanel: false,
       dataToSendToServer: false,
+      SendFullKWTable: false,
       modifyTitle: false,
       phpResponse: "",
       keywords: []
@@ -88,22 +89,57 @@ export default {
           });
       }
     },
+    updateKeywordsTable() {
+      let arrayToSend = this.keywords;
+
+      for(let item of arrayToSend) {
+        let newArray = "";
+        for (let i = 0; i < item[2].length; i++) {
+          if (i === 0) {
+            newArray += item[2][i];
+          } else newArray += "|" + item[2][i];
+        }
+        item[2] = newArray;
+      }
+
+      let formData = new FormData();
+      formData.append(
+        "fullKeywordTable",
+        JSON.stringify(arrayToSend)
+      );
+
+      let req = this.phpLink + "?action=updateFullKWTable";
+      axios
+        .post(req, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        })
+        .then(
+          response => (
+            (this.phpResponse = response.data)
+          )
+        )
+        .catch(function(error) {
+          console.log(error);
+        });
+     },
+
+
 
     updateThisDiapo() {
+      if(this.SendFullKWTable){
+        this.updateKeywordsTable();
+      }
       // recuperer nvelle ordre des images
+
       let newArray = "";
       for (let i = 0; i < this.imageDatas.length; i++) {
         if (i === 0) {
           newArray += this.imageDatas[i].title;
         } else newArray += "|" + this.imageDatas[i].title;
       }
-      // console.log('newArray')
-      // console.log(newArray)
       this.currentKeywordDatas[2] = newArray;
-      console.log("this.imageDatas");
-      console.log(this.imageDatas);
-      console.log("this.currentKeywordDatas");
-      console.log(this.currentKeywordDatas);
       let formData = new FormData();
       formData.append(
         "currentKeywordDatas",

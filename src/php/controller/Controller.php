@@ -12,7 +12,10 @@ class Controller
     {
         require 'model/'.$classname.'.php';
     }
-
+    function updateFullKeywordTable($keywordArray){
+        $updateManager = new UpdateManager();
+        $result = $updateManager -> updateKeywordTable($keywordArray);
+    }
     function deleteImage($id){
         echo('controller');
 

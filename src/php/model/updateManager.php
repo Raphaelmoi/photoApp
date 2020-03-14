@@ -23,4 +23,13 @@ class UpdateManager extends Manager
             $bdd->query("UPDATE imageDatas SET nbre_utilisation = nbre_utilisation - 1 WHERE id = '" . $item['id'] ."'");
         }
     }
+
+    function updateKeywordTable($keywordArray) {
+        var_dump($keywordArray);
+        $bdd = $this->dbConnect();
+        for ($i=0; $i < count($keywordArray); $i++) { 
+            $item = $keywordArray[$i];
+            $bdd->query("UPDATE keyword SET keywords = '" . $item[0] ."', imageName = '" .$item[2] . "', main_image = '" .$item[3] . "' WHERE id = '" . $item[1] ."'");
+        }
+    }
 }

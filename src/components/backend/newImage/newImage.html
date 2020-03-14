@@ -75,7 +75,7 @@
       </button>
     </div>
   </div>
-  <phpResponse :reponse="phpResponse" ></phpResponse>
+  <phpResponse :reponse="phpResponse" v-on:resetReponse="phpResponse=''"></phpResponse>
 
   <div
     v-for="(t, indexImg) in imageUrlList"

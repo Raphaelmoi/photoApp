@@ -38,7 +38,11 @@ try {
             if (isset($_GET['id'])) {
                 $controller -> deleteImage($_GET['id']);
             }
-
+        }
+        elseif( $_GET['action'] == 'updateFullKWTable') {
+            if (isset($_POST['fullKeywordTable'])) {
+                $controller -> updateFullKeywordTable(json_decode($_POST['fullKeywordTable']), true);
+            }
         }
     }
 }

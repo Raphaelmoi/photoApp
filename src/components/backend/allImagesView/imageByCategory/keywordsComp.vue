@@ -30,7 +30,6 @@ export default {
     //set or unset a keyword for an image
     addKeyWord(index) {
       let imgList = this.keywords[index][2];
-      // console.log(this.keywords[index]);
       let isCurrentCategory = false;
       if (this.keywords[index][0] == this.diapoName) {
         isCurrentCategory = true;
@@ -57,7 +56,6 @@ export default {
         // alert('l-action supprime l-image de n-importe qu-elle diaporamas ?' );
       } else {
         this.keywords[index][2].push(this.imgname);
-        console.log(this.keywords);
         // alert('l-actionajoute l-image au diaporama' );
       }
       this.datachanged=true;
