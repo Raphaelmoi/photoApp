@@ -1,42 +1,42 @@
 <section class="myBody mainContainer">
 
   <div class="head">
-
+    <!-- btn back with no update -->
     <router-link v-if="!dataToSendToServer" to="/allImages" class="barBtn">
       <i class="fas fa-arrow-circle-left backFa"></i>
-      Retour
+        Retour
     </router-link>
+    <!-- btn back with update -->
     <a
       v-if="dataToSendToServer"
       class="barBtn"
       @click="updateThisDiapo"
     >
-      <i class="fas fa-check-circle backFa" style="font-size: 1.6em;"></i>
+      <i class="fas fa-check-circle backFa"></i>
       Validez les modifs
     </a>
-
-    <h1 v-if="!modifyTitle"
-    >
+    <!-- title of diaporama -->
+    <h1 v-if="!modifyTitle">
       {{ currentKeywordDatas[0] }}
       <i class="fas fa-pen" @click="modifyTitle = !modifyTitle; dataToSendToServer=true" ></i>
     </h1>
-
+    <!-- input to modify title -->
     <input
       class="titleInput"
       v-if="modifyTitle"
       v-model="currentKeywordDatas[0]"
       value="currentKeywordDatas[0]"
     />
-      <a v-bind:class="category==0 ? 'active' : ''" v-on:click="category = 0">
+    <!-- change the view type (grid or alone) -->
+    <div>
+      <a :class="category==0 ? 'active' : ''" @click="category = 0">
         <i class="fas fa-th fa-2x"></i>
       </a>
-      <a v-bind:class="category==1 ? 'active' : ''" v-on:click="category = 1">
+      <a :class="category==1 ? 'active' : ''" @click="category = 1">
         <i class="fas fa-image fa-2x"></i>
       </a>
-      <a>
-        <i class="fas fa-bars fa-2x"></i>
-      </a>
     </div>
+    <!-- panneau suppression du diaporama -->
     <div class="btnSettings">
       <a v-on:click="settingPanel = !settingPanel">
         <i class="fas fa-trash fa-2x"></i>

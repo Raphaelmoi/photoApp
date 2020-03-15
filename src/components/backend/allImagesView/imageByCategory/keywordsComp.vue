@@ -1,6 +1,4 @@
 <template>
-  <section>
-    <p>Cette image est présente dans les diaporamas suivant :</p>
     <div class="keywordBox">
       <div
         v-for="(keyword, index) in keywords"
@@ -9,10 +7,6 @@
         @click="addKeyWord(index)"
       >{{ keyword[0] }}</div>
     </div>
-    <p>
-      faire: envoyer modifs bdd
-    </p>
-  </section>
 </template>
 
 <script>
@@ -71,7 +65,7 @@ export default {
             return "keyword selected";
           }
         } else {
-          return "keyword ";
+          return "keyword";
         }
       }
     }
@@ -83,26 +77,28 @@ export default {
 .keywordBox {
   display: flex;
   justify-content: center;
-  margin: 1% 10%;
   flex-wrap: wrap;
 }
 .keyword {
   flex: 3;
   padding: 2px 10px;
-  background-color: rgba(100, 100, 100, 1);
-  border: none;
-  color: #111;
+  /* background-color: rgba(150, 150, 150, 1); */
+  border: 1px teal solid;
   outline: none;
   display: flex;
   justify-content: center;
+  align-items: center;
+  text-align: center;
   margin: 4px;
   border-radius: 5px;
   width: fit-content;
   cursor: pointer;
+  color: #111;
 }
 .selected {
   background-color: #4db6ac;
   color: white;
+  border: 1px transparent solid;
 }
 .selected:hover {
   background-color: #00867d;
@@ -111,5 +107,9 @@ export default {
 .selectedCurrentDiapo {
   background: rgb(26, 173, 104);
   color: white;
+  border: 1px transparent solid;
+}
+.selectedCurrentDiapo:hover {
+  background: rgb(21, 139, 84);
 }
 </style>

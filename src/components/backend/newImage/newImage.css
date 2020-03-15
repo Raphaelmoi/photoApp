@@ -22,11 +22,17 @@ section {
 .addkeyword {
   position: absolute;
   /* margin: 10px; */
-  top: 50%;
-  left: 20%;
+  top: 50px;
+  right: 170px;
+  width: 300px;
   background-color: whitesmoke;
   border-radius: 1rem;
   padding: 0.5rem 1rem;
+  z-index: 1;
+}
+.addkeyword > div {
+  display: flex;
+  align-items: center;
 }
 .addkeyword label {
   color: black;
@@ -34,7 +40,7 @@ section {
 }
 .addkeyword input {
   padding-left: 0.4rem;
-  margin-right: 1rem;
+  margin-right: 8px;
   outline: none;
 }
 .submit {
@@ -49,84 +55,13 @@ section {
 .containerImage {
   width: 60vw;
   margin: auto;
-  z-index: -1;
-  position: relative;
-}
-.currentImg {
-  width: 100%;
-  height: 50vh;
-  object-fit: contain;
+  /* background-color: teal; */
+  /* z-index: -1; */
+  position: absolute;
+  transform: translate(-50%, -50%);
+  /* margin-left: 20vw; */
 }
 
-.itemImg {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  margin: 3rem 0;
-}
-.itemImg > div {
-  display: flex;
-  flex-direction: column;
-  flex: 2;
-}
-.inputBoxInfo {
-  display: flex;
-  align-items: center;
-  margin: 0 30%;
-}
-.inputBoxInfo label {
-  flex: 1;
-}
-.inputBoxInfo input {
-  height: 30px;
-  flex: 3;
-  padding: 2px 10px;
-  margin: 10px;
-  background-color: rgba(100, 100, 100, 0);
-  border: none;
-  border-bottom: 2px white solid;
-  color: white;
-  outline: none;
-}
-.keywordBox {
-  display: flex;
-  justify-content: center;
-  margin: 1% 10%;
-  flex-wrap: wrap;
-}
-
-.keyword {
-  margin: 4px;
-  padding: 5px 10px;
-  background-color: lightgray;
-  border-radius: 5px;
-  width: fit-content;
-  cursor: pointer;
-}
-.selected {
-  background-color: #4db6ac;
-  color: white;
-}
-.selected:hover {
-  background-color: #00867d;
-  color: white;
-}
-label {
-  color: white;
-}
-
-.validateAll {
-  padding: 8px 16px;
-  background-color: #4db6ac;
-  border-radius: 8px;
-  border: none;
-  color: white;
-}
-.validateAll:hover {
-  background-color: #00867d;
-  color: white;
-}
 .arrowNavItem {
   position: absolute;
   transition: all 0.8s ease;
@@ -184,4 +119,18 @@ label {
   justify-content: center;
   align-items: center;
   color: white;
+}
+
+.fa-plus {
+  background-color: #4db6ac;
+  border-radius: 50%;
+  padding: 7px;
+  margin: 0 4px;
+  height: 1em;
+  color: white;
+  cursor: pointer;
+}
+.fa-plus:hover {
+  background-color: #00867d;
+
 }

@@ -1,7 +1,9 @@
 <template>
   <article class="imgAlone" v-on:mouseup="toggleFalse">
     <div class="imgSide">
+
       <b v-on:click="$emit('setCategory')" class="pointer">X</b>
+
       <div class="navImg navLeft" v-on:click="navDiapo(-1)">
         <i class="fas fa-arrow-circle-left fa-3x"></i>
       </div>
@@ -12,7 +14,7 @@
       <img
         v-for="(image, index) in imageList"
         :key="image.id"
-        :src="require('../../../../public/images/'+ imageList[index].title)"
+        :src="require('@/assets/images/'+ imageList[index].title)"
         v-bind:class="currentImg==index ? '' : 'hide'"
       />
     </div>
@@ -24,9 +26,10 @@
         v-on:mouseup="toggleFalse"
         v-on:mousemove="grabTheBar"
       ></div>
-      <h5>Nom de l'image :</h5>
       <h4>{{ imageList[currentImg].title }}</h4>
-      <h5>Legende :</h5>
+
+      <div>
+              <h5>Legende :</h5>
       <div class="inputBox">
         <p v-if="!listStatus">{{ imageList[currentImg].legend }}</p>
         <input
@@ -60,8 +63,10 @@
           <i class="fas fa-pen"></i>
         </button>
       </div>
+      </div>
 
-      <div
+      <div>
+              <div
         :key="fakerender"
         v-bind:class="currentKeywordDatas[3]== imageList[currentImg].title  ? 'firstPicture activeBtn' : 'firstPicture'"
         v-on:click="currentKeywordDatas[3] = imageList[currentImg].title; fakerender+=1"
@@ -74,8 +79,9 @@
         @click="deleteImgFromDiapo(currentImg)"
       >
         <p>
-          <i class="fas fa-trash"></i>Supprimer cette image dans ce diaporama
+          <i class="fas fa-trash"></i>Supprimer cette image
         </p>
+      </div>
       </div>
 
       <keywordComponent  
@@ -186,7 +192,6 @@ export default {
             let rightSide = document.getElementsByClassName("myAside")[0];
 
             if (this.isHandlerDragging && e.target === bar) {
-                console.log(e);
                 let x = e.pageX;
                 let screenWidth =
                 window.innerWidth ||
@@ -259,40 +264,6 @@ export default {
   padding: 1rem;
   position: relative;
 }
-.fas {
-  cursor: pointer;
-}
-
-.btnSettings {
-  position: relative;
-}
-.btnSettings>a {
- transition: all .3s ease;
-}
-.btnSettings>a:hover {
-  color: tomato;
-  transition: all 1s ease;
-}
-.panel {
-  position: absolute;
-  top: 0;
-  right: -100%;
-  width: 350px;
-  /* width: 10vw;
-    height: 10vh; */
-  border-radius: 8px;
-  /* border: 1px black solid; */
-  border-top-right-radius: 0;
-  background-color: white;
-  margin: 30px;
-  z-index: 1;
-  padding: 1rem;
-  display: flex;
-  justify-content: space-around;
-}
-.panel a {
-  color: black;
-}
 .arrow-up {
   position: absolute;
   right: 5px;
@@ -318,6 +289,14 @@ export default {
   cursor: grabbing;
   border-left: 12px rgb(17, 122, 117) solid;
 }
+.myAside {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+
+
 .myAside h4,
 .myAside h5,
 .myAside p {
@@ -376,6 +355,9 @@ export default {
 }
 .deleteImage {
   transition: all .3s ease;
+}
+.deleteImage i {
+  margin-right: 8px;
 }
 .deleteImage:hover {
   background-color: tomato;

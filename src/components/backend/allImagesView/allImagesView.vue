@@ -81,7 +81,6 @@ export default {
           }
           this.imageForKeyword = response.data[2].imageName.split("|");
             // console.log(this.imageForKeyword);
-
         })
         .catch(function(error) {
           console.log(error);
@@ -98,8 +97,8 @@ export default {
     },
 
     mouseOver: function(imageName) {
-      console.log(imageName)
-      let a = require('../../../public/images/' + imageName)
+      // console.log(imageName)
+      let a = require('@/assets/images/' + imageName)
       let url =
         "no-repeat 100% 100% url(" + a +")";
         

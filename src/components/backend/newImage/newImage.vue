@@ -3,6 +3,7 @@
 
 <script>
 import phpResponse from '@/components/backend/phpresponse/phpresponse.js'
+import currentImgComponent from '@/components/backend/newImage/currentImgComp.vue'
 
 const axios = require('axios')
 
@@ -23,12 +24,11 @@ export default {
       phpResponse: null,
       onClickAddKeyword: false,
       currentImg: 0,
-      fileIsDeleted: [],
-      rerenderKey: 0
+      fileIsDeleted: []
     }
   },
   components: {
-    phpResponse
+    phpResponse, currentImgComponent
   },
   mounted : function() {
     this.getKeyWordsFromServer();
@@ -36,8 +36,32 @@ export default {
   destroyed : function() {
     document.documentElement.style.setProperty('--circle-radius', '40vw');
   },
-  methods: {
+  computed: {
+    nbrImageLeft : {
+      get(){
+        return this.nbrImageNeedKW()
+      }
+    }
+  },
 
+methods: {
+    nbrImageNeedKW(){
+      let val = 0;
+      
+      for (let i = 0; i < this.selectedKeyWords.length; i++) {
+        if(this.selectedKeyWords[i].length == 0){
+          val++
+        }
+      }
+      return val;
+    },
+
+    updateLegend(val){
+      this.legend = val
+    },
+    updateDescription(val){
+      this.description = val
+    },
     uploadImgOnFront () {
       this.files = this.$refs.myFiles.files
       for (let index = 0; index < this.files.length; index++) {
@@ -53,29 +77,20 @@ export default {
       }
         document.documentElement.style.setProperty('--circle-radius', '45vw');
     },   
-    //set or unset a keyword for an image
-    addKeyWord (imgId, keyword) {
-      // let id = parseInt(keyword[1]);
-      let value = this.selectedKeyWords[imgId].indexOf(keyword[0])
-      console.log( this.selectedKeyWords[imgId])
 
-      if (value >= 0) {
-        this.selectedKeyWords[imgId].splice(value, 1)
-      } else {
-        this.selectedKeyWords[imgId].push(keyword[0])
-      }
-      console.log(this.selectedKeyWords)
-    },
 
     deleteImg(){
       if(this.fileIsDeleted[this.currentImg] === ''){
         this.fileIsDeleted[this.currentImg] = 'deleted';
-        this.rerenderKey +=1;
+        this.next(-1);
+        this.next(1);
       }
       else {
         this.fileIsDeleted[this.currentImg] = '';
         //tricks to re -render the view ->see the :key
-        this.rerenderKey +=1;
+        this.next(1);
+        this.next(-1);
+
       }
     },
     getKeyWordsFromServer(){
@@ -135,7 +150,7 @@ export default {
         })
     },
 
-    createNewKeyWord () {
+    createNewKeyWord( closePanel ) {
       if (this.newKeyword !== null && this.newKeyword !== '') {
         //this.keyword = la liste lu en front, ajoute le mot sans refaire requte php
         //new.keywords, mots a ajouter avec les nvelles photos requete php
@@ -145,32 +160,27 @@ export default {
         ) {
           this.keywords.push([this.newKeyword, this.keywords.length+1])
           this.newKeywords.push(this.newKeyword)
-          // console.log(this.keywords)
         }
       }
-      // console.log(this.newKeywords)
-      this.onClickAddKeyword = !this.onClickAddKeyword;
+      // this.newKeyword = null;
+      if( closePanel ){
+        this.onClickAddKeyword = !this.onClickAddKeyword;
+      }
     },
     //Fleches
     next(direction) {
-      let nextvalue = this.currentImg + (direction);
-      if( nextvalue >= this.legend.length ){
-        this.currentImg = 0;
-      }else if ( nextvalue < 0) {
-        this.currentImg = this.legend.length - 1;
-      } else {
-        this.currentImg = nextvalue;
-      }
+        let nextvalue = this.currentImg + (direction);
+        if( nextvalue >= this.legend.length ){
+          this.currentImg = 0;
+        }else if ( nextvalue < 0) {
+          this.currentImg = this.legend.length - 1;
+        } else {
+          this.currentImg = nextvalue;
+        }
+      
+      
     },
-    //return different class name depend if a keyword is selected or not
-    getClass (imgId, id, categoryName) {
-      id = parseInt(id);
-      if (this.selectedKeyWords[imgId].indexOf(categoryName) >= 0) {
-        return 'keyword selected'
-      } else {
-        return 'keyword '
-      }
-    }
+    
   }
 }
 </script>

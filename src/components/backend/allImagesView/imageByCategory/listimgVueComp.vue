@@ -3,11 +3,11 @@
     <transition-group class="imgSquare">
       <article
         v-for="(image, index) in  imageList"
-        v-bind:key="index"
+        v-bind:key="`image-${index}`"
         v-on:click="zoomOnImg(index)"
         :class="getImgSqureClass(index)"
       >
-        <img :src="require('../../../../public/images/'+ imageList[index].title)" />
+        <img :src="require('@/assets/images/'+ imageList[index].title)" />
         <div class="imgPanel">
           <input type="checkbox" />
           <i class="fas fa-retweet fa-2x"></i>

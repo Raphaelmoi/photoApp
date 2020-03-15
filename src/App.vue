@@ -73,7 +73,7 @@ a {
   border: 10px #cfd8dc solid;
   box-shadow: 0 0 5rem #cfd8dc, inset 0 0 5rem #cfd8dc;
   transition: all 2s ease;
-  z-index: -1;
+  /* z-index: -1; */
 }
 .centerCircle {
   position: absolute;
@@ -82,6 +82,7 @@ a {
   width: 30px;
   height: 1px;
   transform: translate(-50%, -50%);
+  z-index: 1;
 }
 .backBtn {
   padding: 0 1rem 0 0 !important;

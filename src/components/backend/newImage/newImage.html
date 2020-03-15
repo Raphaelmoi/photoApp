@@ -1,12 +1,29 @@
 <section class="myBody">
   <div class="giantCircle">
     <div class="centerCircle">
+      
+      <currentImgComponent 
+        v-for="(image, indexImg) in imageUrlList"
+        :key="image"
+        v-bind:class="currentImg==indexImg ? 'containerImage' : 'hide'"
+        :isDelete="fileIsDeleted[indexImg]"
+        :imgUrl="image"
+        :currentIndex="indexImg"
+        :kwList="keywords"
+        :selectKW="selectedKeyWords"
+        :legende="legend"
+        :desc="description"
+        :upLegend="updateLegend"
+        :upDesc="updateDescription"
+        ></currentImgComponent>
+
+
       <router-link to="/backend" class="navItem backBtn retourBtn">
         <i class="fas fa-arrow-circle-left backFa"></i>
         Retour
       </router-link>
 
-      <div class="navItem item1">
+      <div class="navItem item1" style="color: white;">
         <input
           type="file"
           name="file"
@@ -57,6 +74,24 @@
       >
         Ajouter un mot-clé
       </a>
+      <div class="itemR1">
+        <div v-if="onClickAddKeyword" class="addkeyword">
+          <label for="newKeyword" class="">Ajouter un mot-clé</label>
+          <div>
+            <input type="text" v-model="newKeyword" />
+            <!-- <input class="submit" type="submit" @click="createNewKeyWord" /> -->
+            <i class="fas fa-plus" @click="createNewKeyWord(false)"></i>
+
+            <a
+              class="validateAll "
+              type="submit"
+              @click="createNewKeyWord(true)"
+            >
+              valider
+            </a>
+          </div>
+        </div>
+      </div>
 
       <a
         v-if="legend.length !== 0"
@@ -67,77 +102,33 @@
       </a>
 
       <button
-        v-if="files.length !== 0 "
+      v-if="files.length !== 0 && nbrImageLeft == 0"
+      class="submit navItem right itemR8"
+      @click="onClicPrepareDataBeforeSending"
+    >
+      <span>Enregistrer</span>
+    </button>
+      <button
+        v-else-if="files.length !== 0 && selectedKeyWords[currentImg].length > 0"
         class="submit navItem right itemR8"
-        @click="onClicPrepareDataBeforeSending"
+        @click="next(1)"
       >
-        Enregistrer
+      Enregistrer ({{ nbrImageLeft }} images restantes)
+    </button>
+      <button
+        v-else-if="files.length !== 0"
+        class="submit navItem right itemR8"
+        @click=" phpResponse = 'choisissez un mot clef'"
+      >
+       Enregistrer ({{ nbrImageLeft }} images restantes)
       </button>
+
     </div>
   </div>
-  <phpResponse :reponse="phpResponse" v-on:resetReponse="phpResponse=''"></phpResponse>
-
-  <div
-    v-for="(t, indexImg) in imageUrlList"
-    :key="t.id"
-    v-bind:class="currentImg==indexImg ? 'containerImage' : 'hide'"
-  >
-    <div class="itemImg">
-      <!-- surcouche si la photo est supprimé -->
-      <div
-        v-if="fileIsDeleted[indexImg] !== ''"
-        class="deletedItem"
-        :key="rerenderKey"
-      >
-        X
-        <br />
-        <span style="font-size: 2rem;">photo supprimée</span>
-      </div>
-
-      <img id="imageItem" class="currentImg" :src="t" alt="your image" />
-
-      <div>
-        <div class="keywordBox">
-          <div
-            v-bind:class="getClass(indexImg, keyword[1], keyword[0])"
-            v-for="(keyword, index) in keywords"
-            :key="keyword.id"
-            @click="addKeyWord( indexImg, keyword)"
-          >
-            {{ keyword[0] }}
-          </div>
-        </div>
-
-        <div class="inputBoxInfo">
-          <label for="legend">Légende</label>
-          <input type="text" name="legend" v-model="legend[indexImg]" />
-        </div>
-        <div class="inputBoxInfo">
-          <label for="description">Description (alt)</label>
-          <input
-            type="text"
-            name="description"
-            v-model="description[indexImg]"
-          />
-        </div>
-
-        <div>
-          <div v-if="onClickAddKeyword" class="addkeyword">
-            <label for="newKeyword" class="">Ajouter un mot-clé</label>
-            <input type="text" v-model="newKeyword" />
-            <!-- <input class="submit" type="submit" @click="createNewKeyWord" /> -->
-            <button
-              class="validateAll "
-              type="submit"
-              @click="createNewKeyWord"
-            >
-              valider
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <phpResponse
+    :reponse="phpResponse"
+    v-on:resetReponse="phpResponse=''"
+  ></phpResponse>
 
   <!-- </form> -->
 </section>

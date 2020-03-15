@@ -37,7 +37,6 @@ export default {
     this.currentKeywordDatas = this.$route.params.selectedKeyword;
     let imageNames = this.currentKeywordDatas[2].split("|");
     this.currentKeywordDatas[2] = imageNames;
-    // console.log(this.currentKeywordDatas);
   },
   created: function() {},
 
@@ -68,7 +67,6 @@ export default {
         )
       ) {
         //rajouter id de toutes les images pour leur soustraire 1 ds champs nbr_utilisation
-        console.log(this.currentKeywordDatas[1]);
         let formData = new FormData();
         formData.append("id", JSON.stringify(this.currentKeywordDatas[1]));
         formData.append("imageDatas", JSON.stringify(this.imageDatas));
@@ -177,8 +175,6 @@ export default {
             ]);
             // this.selectedKeyWords.push([]);
           }
-          console.log(response);
-          console.log(this.keywords);
         })
         .catch(function(error) {
           console.log(error);
@@ -191,9 +187,6 @@ export default {
         .then(response => {
           // this.imageDatas = response.data;
           var parsedobj = JSON.parse(JSON.stringify(response.data));
-          // console.log(parsedobj)
-          // console.log(response.data)
-
           let nextarr = [];
           for (let i = 0; i < this.currentKeywordDatas[2].length; i++) {
             let b = -1;
@@ -206,8 +199,6 @@ export default {
               nextarr.push(parsedobj[b]);
             }
           }
-          // console.log('nextarr')
-          console.log(JSON.parse(JSON.stringify(nextarr)));
           this.imageDatas = nextarr;
         })
         .catch(function(error) {

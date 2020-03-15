@@ -86,7 +86,7 @@ class Controller
     function uploadImg(){
         $accepted_origins = array("https://localhost");
         // Images upload path
-        $imageFolder = "../public/images/";
+        $imageFolder = "../assets/images/";
         reset($_FILES);
         $temp = current($_FILES);
         $total = count($temp['tmp_name']);
