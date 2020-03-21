@@ -31,9 +31,13 @@
         <router-link to="/newImage" class="navItem right itemR6"> item r 6 </router-link>
         <router-link to="/newImage" class="navItem right itemR7"> item r 7 </router-link>
         <router-link to="/newImage" class="navItem right itemR8">Settings</router-link>
+
+
       </div>
       
+
     </div>
+
   </section>
 </template>
 
@@ -47,6 +51,9 @@ export default {
     };
   },
   mounted() {
+    //TODO AJouter une possibilité de message global visible quand on change de page et disparait qd on click
+    // this.$store.commit('increment', 'mon message')
+    console.log(this.$store.state.message) // -> 1
   },
   methods: {}
   

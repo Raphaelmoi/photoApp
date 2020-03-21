@@ -21,7 +21,7 @@ try {
                 // TODO
                 // SECURISER L'envoie?
                 $datas = json_decode($_POST['datas'], true);
-                var_dump($datas);
+                // var_dump($datas);
                 $controller -> uploadImg($_FILES);
                 $controller -> uploadDatas($datas);
             }

@@ -178,6 +178,7 @@ label {
   text-align: center;
   justify-content: center;
   height: 30px;
+  cursor: pointer;
 } 
 .validateAll:hover {
   background-color: #00867d;

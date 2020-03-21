@@ -17,11 +17,9 @@ class Controller
         $result = $updateManager -> updateKeywordTable($keywordArray);
     }
     function deleteImage($id){
-        echo('controller');
-
+        // echo('controller');
         $deleteManager = new DeleteManager();
         $result = $deleteManager -> deleteImageById($id);
-
         
         return $result;
     }
@@ -39,7 +37,6 @@ class Controller
         $result = $updateManager -> updateImageTable($imageArray);
         $resultb = $updateManager -> updateOneKeywordTable($keywordArray);
   
-        echo('successcontroller');
         return $result;
     }
 

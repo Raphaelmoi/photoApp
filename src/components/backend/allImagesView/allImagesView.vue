@@ -56,6 +56,7 @@ export default {
   },
   mounted: function() {
    this.getKeyWordsFromServer();
+   
   },
   methods: {
     getKeyWordsFromServer() {
@@ -97,15 +98,8 @@ export default {
     },
 
     mouseOver: function(imageName) {
-      // console.log(imageName)
       let a = require('@/assets/images/' + imageName)
-      let url =
-        "no-repeat 100% 100% url(" + a +")";
-        
-      // let url =
-      //   "no-repeat 100% 100% url('https://raphaelmouly.com/photo/image/TOP/top03" +
-      //   index +
-      //   ".jpg')";
+      let url = "no-repeat 100% 100% url(" + a +")";
         
       document.getElementsByClassName("giantCircle")[0].style.background = url;
       document.getElementsByClassName("giantCircle")[0].style.backgroundSize =

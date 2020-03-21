@@ -1,7 +1,45 @@
 <section class="myBody">
   <div class="giantCircle">
-    <div class="centerCircle">
-      
+    <div class="centerCircle" >
+
+      <div :class="legend.length == 0? 'uploaderImage' : 'navItem item1'" >
+        <input
+          type="file"
+          name="file"
+          id="file"
+          ref="myFiles"
+          class="inputfile"
+          @change="uploadImgOnFront"
+          accept="image/png, image/jpeg"
+          multiple="multiple"
+        />
+
+        <label for="file" v-if="legend.length == 0">
+          <span>Ajouter des images</span>
+        </label>
+        <label for="file" v-else >Importer + d'image(s)</label>
+
+      </div>
+
+      <div class="nokeyword" v-if="keywords.length == 0 && legend.length !== 0">
+        Pour commmencer,<br/>
+        ajoutez un  diapoarma en cliquant ci-dessous
+        <br/>
+       <a
+          class="myButton"
+          @click="onClickAddKeyword = !onClickAddKeyword"
+        >
+        Ajouter un diaporama
+
+        </a>
+      </div>
+      <div class="nokeyword" v-if="files && isAlreadyOnDb()">
+          Cette image à déja été télecharger
+          <br/>
+          Elle ne sera donc pa ré-envoyée <br/>
+          Vous pouvez modifier toutes les données à son sujet à cette page (lien) en la modifiant dans un diaporama la contennant
+      </div>
+
       <currentImgComponent 
         v-for="(image, indexImg) in imageUrlList"
         :key="image"
@@ -18,12 +56,12 @@
         ></currentImgComponent>
 
 
-      <router-link to="/backend" class="navItem backBtn retourBtn">
+      <a @click="confirmBeforeLeave" class="navItem backBtn retourBtn" >
         <i class="fas fa-arrow-circle-left backFa"></i>
         Retour
-      </router-link>
+      </a>
 
-      <div class="navItem item1" style="color: white;">
+      <!-- <div v-if="legend.length !== 0" class="navItem item1" style="color: white;">
         <input
           type="file"
           name="file"
@@ -33,24 +71,34 @@
           @change="uploadImgOnFront"
           accept="image/png, image/jpeg"
           multiple="multiple"
+          
         />
-        <label for="file">Importer image(s)</label>
-      </div>
+        <label for="file">Importer + d'image(s)</label>
+      </div> -->
 
       <a
-        v-if="legend.length !== 0"
-        to="/newImage"
+        v-if="fileIsDeleted.length !== 0 && fileIsDeleted[currentImg] !== 'deleted'"
         class="navItem backBtn item7"
-        v-on:click="deleteImg()"
+        @click="deleteImg()"
+        v-model="fileIsDeleted[currentImg]"
       >
         <i class="fas fa-skull-crossbones navFa"></i>
-        <span v-if="fileIsDeleted[currentImg] === ''">
+        <span>
           Supprimer cette image
         </span>
-        <span v-else>
-          Récuperer l'image
-        </span>
       </a>
+      <a
+      v-else-if="fileIsDeleted.length !== 0 && fileIsDeleted[currentImg] === 'deleted'"
+      class="navItem backBtn item7"
+      @click="deleteImg()"
+      v-model="fileIsDeleted[currentImg]"
+
+    >
+      <i class="fas fa-skull-crossbones navFa"></i>
+      <span >
+        Récuperer l'image
+      </span>
+    </a>        
       <!-- LEFT NAV BUTON -->
       <a
         v-if="legend.length !== 0"
@@ -67,16 +115,21 @@
       <!-- ::::::::::::::::::::::::::::::: -->
       <!-- :::::::::::::RIGHT::::::::::::: -->
       <!-- ::::::::::::::::::::::::::::::: -->
+      
+
+
       <a
         v-if="legend.length !== 0 "
         class="navItem right itemR1"
         @click="onClickAddKeyword = !onClickAddKeyword"
       >
-        Ajouter un mot-clé
+       Ajouter un diaporama
+
       </a>
       <div class="itemR1">
         <div v-if="onClickAddKeyword" class="addkeyword">
-          <label for="newKeyword" class="">Ajouter un mot-clé</label>
+          <span class="closePanel" @click="onClickAddKeyword = false">X</span>
+          <label for="newKeyword" class="">Créer un diaporama</label>          
           <div>
             <input type="text" v-model="newKeyword" />
             <!-- <input class="submit" type="submit" @click="createNewKeyWord" /> -->
@@ -105,20 +158,22 @@
       v-if="files.length !== 0 && nbrImageLeft == 0"
       class="submit navItem right itemR8"
       @click="onClicPrepareDataBeforeSending"
+      
     >
       <span>Enregistrer</span>
+
     </button>
       <button
         v-else-if="files.length !== 0 && selectedKeyWords[currentImg].length > 0"
         class="submit navItem right itemR8"
-        @click="next(1)"
+        @click="missingImgKeywordMsg"
       >
       Enregistrer ({{ nbrImageLeft }} images restantes)
     </button>
       <button
         v-else-if="files.length !== 0"
         class="submit navItem right itemR8"
-        @click=" phpResponse = 'choisissez un mot clef'"
+        @click=" $store.commit('increment', 'Chaque image doit être associé à au moins une image. Selectionnez un des mot-clefs présent sous l\'image ou créez-en un nouveau en cliquant sur le bouton ajouter un diaporama')"
       >
        Enregistrer ({{ nbrImageLeft }} images restantes)
       </button>

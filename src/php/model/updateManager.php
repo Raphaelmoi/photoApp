@@ -11,7 +11,7 @@ class UpdateManager extends Manager
         }
     }
     function updateOneKeywordTable( $keywordArray){
-        var_dump($keywordArray);
+        // var_dump($keywordArray);
         $bdd = $this->dbConnect();
         $bdd->query("UPDATE keyword SET keywords = '" . $keywordArray[0] ."', imageName = '" .$keywordArray[2] . "', main_image = '" .$keywordArray[3] . "' WHERE id = '" . $keywordArray[1] ."'");
     }

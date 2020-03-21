@@ -115,7 +115,8 @@ export default {
         })
         .then(
           response => (
-            (this.phpResponse = response.data)
+            (this.$store.commit('increment', response.data))
+            // (this.phpResponse = response.data)
           )
         )
         .catch(function(error) {
@@ -154,8 +155,11 @@ export default {
         })
         .then(
           response => (
-            (this.phpResponse = response.data),
-            (this.dataToSendToServer = false)
+            // (this.phpResponse = response.data),
+            this.$store.commit('increment', 'Les modifications ont été apportées'),
+            this.dataToSendToServer = false,
+            this.$router.push({ name: "AllImages"})
+
           )
         )
         .catch(function(error) {
@@ -171,7 +175,8 @@ export default {
             this.keywords.push([
               response.data[index].keywords,
               response.data[index].id,
-              response.data[index].imageName.split("|")
+              response.data[index].imageName.split("|"),
+              response.data[index].main_image
             ]);
             // this.selectedKeyWords.push([]);
           }
@@ -205,6 +210,12 @@ export default {
           console.log(error);
         });
     },
+    areYouSure(){
+      let a  = confirm('Voulez vous quitter la page sans sauvegarder ?');
+      if (a) {
+        this.$router.push({ name: "AllImages"})
+      }
+    }
   }
 };
 </script>

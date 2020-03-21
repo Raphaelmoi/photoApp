@@ -6,6 +6,10 @@
       <i class="fas fa-arrow-circle-left backFa"></i>
         Retour
     </router-link>
+    <a v-if="dataToSendToServer" @click='areYouSure()'class="barBtn">
+      <i class="fas fa-arrow-circle-left backFa"></i>
+        Quitter
+    </a>
     <!-- btn back with update -->
     <a
       v-if="dataToSendToServer"
@@ -15,6 +19,7 @@
       <i class="fas fa-check-circle backFa"></i>
       Validez les modifs
     </a>
+
     <!-- title of diaporama -->
     <h1 v-if="!modifyTitle">
       {{ currentKeywordDatas[0] }}

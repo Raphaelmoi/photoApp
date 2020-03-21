@@ -3,6 +3,15 @@
     <transition name="fade"> 
       <router-view />
     </transition>
+
+    <div class="generalMessage"
+      v-if="!$store.state.message == ''"
+      @click="$store.commit('increment', '')"
+      v-html="$store.state.message"
+      > 
+      
+      </div>
+
   </div>
 </template>
 
@@ -33,10 +42,6 @@ export default {
   opacity: 0;
 }
 
-.fade-leave-active .navItem {
-  /* transition: transform .5s; */
-  /* transform: unset; */
-}
 .fade-enter .navItem, .fade-leave-to .navItem /* .fade-leave-active below version 2.1.8 */ {
   transform: unset;
   opacity: 0;
@@ -61,6 +66,18 @@ body {
 }
 a {
   color: white;
+}
+.generalMessage {
+  position:absolute;  
+  width: 90vw; 
+  max-height: 40vh;
+  background: white; 
+  z-index:3; 
+  line-height: 2rem;
+  margin: 5vh 5vw 5vw;
+  padding: 1rem;
+  overflow: auto;
+  border-radius: auto;
 }
 .giantCircle {
   position: absolute;
@@ -102,6 +119,7 @@ a {
   align-items: center;
   white-space: nowrap;
   background-color: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
 }
 
 .navItem:hover {

@@ -1,7 +1,6 @@
 <template>
   <article class="imgAlone" v-on:mouseup="toggleFalse">
     <div class="imgSide">
-
       <b v-on:click="$emit('setCategory')" class="pointer">X</b>
 
       <div class="navImg navLeft" v-on:click="navDiapo(-1)">
@@ -29,69 +28,67 @@
       <h4>{{ imageList[currentImg].title }}</h4>
 
       <div>
-              <h5>Legende :</h5>
-      <div class="inputBox">
-        <p v-if="!listStatus">{{ imageList[currentImg].legend }}</p>
-        <input
-          v-if="listStatus"
-          type="text"
-          v-model="imageList[currentImg].legend"
-          value="imageList[currentImg].legend"
-        />
-        <button
-          v-if="!listStatus"
-          v-on:click="declareChange"
-        >
-          <i class="fas fa-pen"></i>
+        <h5>Legende :</h5>
+        <div class="inputBox">
+          <p v-if="!listStatus && imageList[currentImg].legend !== ''">{{ imageList[currentImg].legend }}</p>
+          <p v-else-if="!listStatus" style="color:#888">Entre une légende en cliquant ici
+            <i class="fas fa-arrow-right"></i>
+          </p>
+          <input
+            v-if="listStatus"
+            type="text"
+            v-model="imageList[currentImg].legend"
+            value="imageList[currentImg].legend"
+          />
+          <button v-if="!listStatus" v-on:click="declareChange">
+            <i class="fas fa-pen"></i>
+          </button>
+        </div>
 
-        </button>
-      </div>
-
-      <h5>Balise alt</h5>
-      <div class="inputBox">
-        <p v-if="!listStatus">{{ imageList[currentImg].alt }}</p>
-        <input
-          v-if="listStatus"
-          type="text"
-          v-model="imageList[currentImg].alt"
-          value="imageList[currentImg].alt"
-        />
-        <button
-          v-if="!listStatus"
-          v-on:click="declareChange"
-        >
-          <i class="fas fa-pen"></i>
-        </button>
-      </div>
+        <h5>Balise alt</h5>
+        <div class="inputBox">
+          <p v-if="!listStatus && imageList[currentImg].alt !== ''">{{ imageList[currentImg].alt }}</p>
+          <p v-else-if="!listStatus" style="color:#888">Entrer contenu balise alt ici
+            <i class="fas fa-arrow-right"></i>
+          </p>
+          <input
+            v-if="listStatus"
+            type="text"
+            v-model="imageList[currentImg].alt"
+            value="imageList[currentImg].alt"
+            placeholder="balise alt"
+          />
+          <button v-if="!listStatus" v-on:click="declareChange">
+            <i class="fas fa-pen"></i>
+          </button>
+        </div>
       </div>
 
       <div>
-              <div
-        :key="fakerender"
-        v-bind:class="currentKeywordDatas[3]== imageList[currentImg].title  ? 'firstPicture activeBtn' : 'firstPicture'"
-        v-on:click="currentKeywordDatas[3] = imageList[currentImg].title; fakerender+=1"
-      >
-        <p>Image à la une</p>
-      </div>
-      <div
-        class="firstPicture deleteImage"
-        style="border-color:tomato;"
-        @click="deleteImgFromDiapo(currentImg)"
-      >
-        <p>
-          <i class="fas fa-trash"></i>Supprimer cette image
-        </p>
-      </div>
-      </div>
-
-      <keywordComponent  
-        :keywords="keywords"
-        :imgname="imageList[currentImg].title" 
-        :diapoName="currentKeywordDatas[0]"
-        v-on:isModified="$emit('sendKWTableToServer'); declareChange()" 
+        <div
+          :key="fakerender"
+          :class="currentKeywordDatas[3]== imageList[currentImg].title  ? 'firstPicture activeBtn' : 'firstPicture'"
+          @click="currentKeywordDatas[3] = imageList[currentImg].title; fakerender+=1; declareChange()"
         >
-      </keywordComponent>
+          <p>Image à la une</p>
+        </div>
+        <div
+          class="firstPicture deleteImage"
+          style="border-color:tomato;"
+          @click="deleteImgFromDiapo(currentImg)"
+        >
+          <p>
+            <i class="fas fa-trash"></i>Supprimer cette image
+          </p>
+        </div>
+      </div>
 
+      <keywordComponent
+        :keywords="keywords"
+        :imgname="imageList[currentImg].title"
+        :diapoName="currentKeywordDatas[0]"
+        v-on:isModified="$emit('sendKWTableToServer'); declareChange()"
+      ></keywordComponent>
     </aside>
   </article>
 </template>
@@ -100,119 +97,123 @@
 import keywordComponent from "@/components/backend/allImagesView/imageByCategory/keywordsComp.vue";
 
 export default {
-    data() {
-        return {
-        isHandlerDragging: false,
-        fakerender: 0,
-        keywordsSendToServer: false,
-        };
-    },
-    props: ["imgList", "currentImage", 'listStatus', 'currentKWData', 'allKeywords'],
+  data() {
+    return {
+      isHandlerDragging: false,
+      fakerender: 0,
+      keywordsSendToServer: false
+    };
+  },
+  props: [
+    "imgList",
+    "currentImage",
+    "listStatus",
+    "currentKWData",
+    "allKeywords"
+  ],
 
-    components: {
-        keywordComponent, 
+  components: {
+    keywordComponent
+  },
+  computed: {
+    imageList: {
+      get() {
+        return this.imgList;
+      },
+      set(newVal) {
+        this.$emit("updateImageList", newVal);
+      }
     },
-    computed: {
-        imageList: {
-            get() {
-                return this.imgList;
-            },
-            set(newVal) {
-                this.$emit('updateImageList', newVal);
-            }
-        },
-        currentImg: {
-            get() {
-                return this.currentImage;
-            },
-            set(newVal) {
-                this.$emit('setCurrentImg', newVal);
-            }
-        },
-        currentKeywordDatas: {
-            get() {
-                return this.currentKWData;
-            },
-            set(newVal) {
-                this.$emit('updateKeywordData', newVal);
-            }
-        },
-        keywords: {
-            get(){
-                return this.allKeywords;
-            },
-            set(newVal){
-                this.$emit('updateAllKeywords', newVal);
-            }
-        }
+    currentImg: {
+      get() {
+        return this.currentImage;
+      },
+      set(newVal) {
+        this.$emit("setCurrentImg", newVal);
+      }
     },
-    methods: {
-        declareChange(){
-            this.$emit('ismodified'); 
-        },
-        //diaporama navigation
-        deleteImgFromDiapo(id) {
-          if (
-            confirm(
-              "Etes vous sur de vouloir supprimer cette image de ce diaporama? Cette action est irréverssible"
-            )
-          ) {
-            let oldTitle = this.imageList[id].title;
-            this.imageList.splice(id, 1);
-            this.currentKeywordDatas[2] = this.imageList;
-            // change the main image if it was the deleted img
-            if (this.currentKeywordDatas[3] === oldTitle) {
-              this.currentKeywordDatas[3] = this.imageList[0].title;
-            }
-            this.declareChange();
-            this.$emit('setCategory')
-          }
-        },
-        navDiapo(direction) {
-            let nextvalue = this.currentImg + direction;
-            if (nextvalue >= this.currentKeywordDatas[2].length) {
-                this.currentImg = 0;
-            } else if (nextvalue < 0) {
-                this.currentImg = this.currentKeywordDatas[2].length - 1;
-            } else {
-                this.currentImg = nextvalue;
-            }
-        },
-        // state for grabbing the bar
-        toggleTrue() {
-            this.isHandlerDragging = true;
-        },
-        toggleFalse() {
-            this.isHandlerDragging = false;
-        },
-        grabTheBar() {
-            var e = e || window.event;
-            let bar = document.getElementsByClassName("controlBar")[0];
-            let leftSide = document.getElementsByClassName("imgSide")[0];
-            let rightSide = document.getElementsByClassName("myAside")[0];
-
-            if (this.isHandlerDragging && e.target === bar) {
-                let x = e.pageX;
-                let screenWidth =
-                window.innerWidth ||
-                document.documentElement.clientWidth ||
-                document.body.clientWidth;
-
-                let percentageX = (x * 100) / screenWidth;
-                percentageX = Math.round(percentageX * 100) / 100;
-                if (percentageX <= 100 && percentageX >= 0) {
-                leftSide.style.width = percentageX + "%";
-                rightSide.style.width = 100 - percentageX + "%";
-                }
-            }
-        },
-        
+    currentKeywordDatas: {
+      get() {
+        return this.currentKWData;
+      },
+      set(newVal) {
+        this.$emit("updateKeywordData", newVal);
+      }
+    },
+    keywords: {
+      get() {
+        return this.allKeywords;
+      },
+      set(newVal) {
+        this.$emit("updateAllKeywords", newVal);
+      }
     }
-}
+  },
+  methods: {
+    declareChange() {
+      this.$emit("ismodified");
+    },
+    //diaporama navigation
+    deleteImgFromDiapo(id) {
+      if (
+        confirm(
+          "Etes vous sur de vouloir supprimer cette image de ce diaporama? Cette action est irréverssible"
+        )
+      ) {
+        let oldTitle = this.imageList[id].title;
+        this.imageList.splice(id, 1);
+        this.currentKeywordDatas[2] = this.imageList;
+        // change the main image if it was the deleted img
+        if (this.currentKeywordDatas[3] === oldTitle) {
+          this.currentKeywordDatas[3] = this.imageList[0].title;
+        }
+        this.declareChange();
+        this.$emit("setCategory");
+      }
+    },
+    navDiapo(direction) {
+      let nextvalue = this.currentImg + direction;
+      if (nextvalue >= this.currentKeywordDatas[2].length) {
+        this.currentImg = 0;
+      } else if (nextvalue < 0) {
+        this.currentImg = this.currentKeywordDatas[2].length - 1;
+      } else {
+        this.currentImg = nextvalue;
+      }
+    },
+    // state for grabbing the bar
+    toggleTrue() {
+      this.isHandlerDragging = true;
+    },
+    toggleFalse() {
+      this.isHandlerDragging = false;
+    },
+    grabTheBar() {
+      var e = e || window.event;
+      let bar = document.getElementsByClassName("controlBar")[0];
+      let leftSide = document.getElementsByClassName("imgSide")[0];
+      let rightSide = document.getElementsByClassName("myAside")[0];
+
+      if (this.isHandlerDragging && e.target === bar) {
+        let x = e.pageX;
+        let screenWidth =
+          window.innerWidth ||
+          document.documentElement.clientWidth ||
+          document.body.clientWidth;
+
+        let percentageX = (x * 100) / screenWidth;
+        percentageX = Math.round(percentageX * 100) / 100;
+        if (percentageX <= 100 && percentageX >= 0) {
+          leftSide.style.width = percentageX + "%";
+          rightSide.style.width = 100 - percentageX + "%";
+        }
+      }
+    }
+  }
+};
 </script>
 
 <style scoped>
-
 .imgAlone {
   display: flex;
   height: 93vh;
@@ -241,15 +242,14 @@ export default {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  color: #FFFFFFcc;
+  color: #ffffffcc;
   cursor: pointer;
   border-radius: 50%;
-  transition: all .3s ease;
+  transition: all 0.3s ease;
 }
 .navImg:hover {
-  color: #FFF;
+  color: #fff;
   transition: all 1s ease;
-
 }
 .navLeft {
   left: 2rem;
@@ -295,8 +295,6 @@ export default {
   justify-content: space-around;
 }
 
-
-
 .myAside h4,
 .myAside h5,
 .myAside p {
@@ -341,20 +339,18 @@ export default {
   border-radius: 4px;
   margin: 0.5rem 0;
   cursor: pointer;
-  transition: all .3s ease;
-
+  transition: all 0.3s ease;
 }
 .firstPicture:hover {
   background-color: cadetblue;
-  transition: all .3s ease;
-
+  transition: all 0.3s ease;
 }
 .activeBtn {
   background-color: cadetblue;
   color: white;
 }
 .deleteImage {
-  transition: all .3s ease;
+  transition: all 0.3s ease;
 }
 .deleteImage i {
   margin-right: 8px;
