@@ -7,9 +7,11 @@
     <div class="generalMessage"
       v-if="!$store.state.message == ''"
       @click="$store.commit('increment', '')"
-      v-html="$store.state.message"
-      > 
       
+      > 
+      <div v-html="$store.state.message"></div>
+      <a href="">X</a>
+
       </div>
 
   </div>
@@ -66,6 +68,7 @@ body {
 }
 a {
   color: white;
+  text-decoration: none;
 }
 .generalMessage {
   position:absolute;  
@@ -78,6 +81,14 @@ a {
   padding: 1rem;
   overflow: auto;
   border-radius: auto;
+  text-align: center;
+}
+.generalMessage a {
+  color: black;
+  position: absolute;
+  top: 0px;
+  right: 10px;
+  text-decoration: none;
 }
 .giantCircle {
   position: absolute;
@@ -108,7 +119,7 @@ a {
 .navItem {
   position: absolute;
   padding: 0.5rem 1rem 0.5rem 2.5rem;
-  border: 4px white solid;
+  border: 1px white solid;
   border-radius: 5rem;
   text-decoration: none;
   font-size: 1rem;

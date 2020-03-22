@@ -52,6 +52,10 @@ class Controller
         echo json_encode($result);
         return $result;
     }
+    function createNewDiapo($keyword){
+        $postManager = new PostManager();
+        $sendNewKeyword = $postManager -> addNewKeyword($keyword);
+    }
     function uploadDatas($datas){
         $postManager = new PostManager();
         //add new keyword

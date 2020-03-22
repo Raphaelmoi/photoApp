@@ -30,8 +30,11 @@
       <div>
         <h5>Legende :</h5>
         <div class="inputBox">
-          <p v-if="!listStatus && imageList[currentImg].legend !== ''">{{ imageList[currentImg].legend }}</p>
-          <p v-else-if="!listStatus" style="color:#888">Entre une légende en cliquant ici
+          <p
+            v-if="!listStatus && imageList[currentImg].legend !== ''"
+          >{{ imageList[currentImg].legend }}</p>
+          <p v-else-if="!listStatus" style="color:#888">
+            Entre une légende en cliquant ici
             <i class="fas fa-arrow-right"></i>
           </p>
           <input
@@ -48,7 +51,8 @@
         <h5>Balise alt</h5>
         <div class="inputBox">
           <p v-if="!listStatus && imageList[currentImg].alt !== ''">{{ imageList[currentImg].alt }}</p>
-          <p v-else-if="!listStatus" style="color:#888">Entrer contenu balise alt ici
+          <p v-else-if="!listStatus" style="color:#888">
+            Entrer contenu balise alt ici
             <i class="fas fa-arrow-right"></i>
           </p>
           <input
@@ -89,19 +93,32 @@
         :diapoName="currentKeywordDatas[0]"
         v-on:isModified="$emit('sendKWTableToServer'); declareChange()"
       ></keywordComponent>
+      <div style="position: relative">
+        <a @click="onClickAddKeyword = !onClickAddKeyword">creer un nouveau diapo</a>
+        <newKeyWordComp
+          :isOpen.sync="onClickAddKeyword"
+          :allKW.sync="keywords"
+          :newKW.sync="newKeywordsBox"
+          v-on:change="$emit('reloadKeywordTable')"
+          :sendToServer="true"
+        ></newKeyWordComp>
+      </div>
     </aside>
   </article>
 </template>
 
 <script>
 import keywordComponent from "@/components/backend/allImagesView/imageByCategory/keywordsComp.vue";
+import newKeyWordComp from "@/components/backend/newKeyWordComp.vue";
 
 export default {
   data() {
     return {
       isHandlerDragging: false,
       fakerender: 0,
-      keywordsSendToServer: false
+      keywordsSendToServer: false,
+      onClickAddKeyword: false,
+      newKeywordsBox: []
     };
   },
   props: [
@@ -113,7 +130,8 @@ export default {
   ],
 
   components: {
-    keywordComponent
+    keywordComponent,
+    newKeyWordComp
   },
   computed: {
     imageList: {

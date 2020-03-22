@@ -1,21 +1,16 @@
 <section class="myBody mainContainer">
-
   <div class="head">
     <!-- btn back with no update -->
     <router-link v-if="!dataToSendToServer" to="/allImages" class="barBtn">
       <i class="fas fa-arrow-circle-left backFa"></i>
-        Retour
+      Retour
     </router-link>
-    <a v-if="dataToSendToServer" @click='areYouSure()'class="barBtn">
+    <a v-if="dataToSendToServer" @click="areYouSure()" class="barBtn">
       <i class="fas fa-arrow-circle-left backFa"></i>
-        Quitter
+      Quitter
     </a>
     <!-- btn back with update -->
-    <a
-      v-if="dataToSendToServer"
-      class="barBtn"
-      @click="updateThisDiapo"
-    >
+    <a v-if="dataToSendToServer" class="barBtn" @click="updateThisDiapo">
       <i class="fas fa-check-circle backFa"></i>
       Validez les modifs
     </a>
@@ -23,7 +18,10 @@
     <!-- title of diaporama -->
     <h1 v-if="!modifyTitle">
       {{ currentKeywordDatas[0] }}
-      <i class="fas fa-pen" @click="modifyTitle = !modifyTitle; dataToSendToServer=true" ></i>
+      <i
+        class="fas fa-pen"
+        @click="modifyTitle = !modifyTitle; dataToSendToServer=true"
+      ></i>
     </h1>
     <!-- input to modify title -->
     <input
@@ -53,26 +51,30 @@
           Supprimez le diaporama
           <span style="font-weight: bold;">"{{ currentKeywordDatas[0] }}"</span>
         </a>
-        <a style="color:cadetblue; cursor: pointer;" @click="settingPanel = !settingPanel"
+        <a
+          style="color:cadetblue; cursor: pointer;"
+          @click="settingPanel = !settingPanel"
           >Annuler</a
         >
       </div>
     </div>
   </div>
-  
-  <phpResponse :reponse="phpResponse" v-on:resetReponse="phpResponse=''"></phpResponse>
 
-  <listimgVueComp 
-    v-if="category == 0" 
+  <phpResponse
+    :reponse="phpResponse"
+    v-on:resetReponse="phpResponse=''"
+  ></phpResponse>
+
+  <listimgVueComp
+    v-if="category == 0"
     v-on:setCategory="category=1"
-    :imgList="imageDatas" 
-    :currentTitle="currentKeywordDatas[3]" 
+    :imgList="imageDatas"
+    :currentTitle="currentKeywordDatas[3]"
     v-on:setCurrentImg="setCurrentImgFromComponent"
     v-on:setImgOrder="setImgOrderFromComponent"
-    v-on:ismodified="dataToSendToServer=true" 
-    >
+    v-on:ismodified="dataToSendToServer=true"
+  >
   </listimgVueComp>
-
 
   <oneImgComp
     v-if="category == 1"
@@ -80,14 +82,15 @@
     :listStatus="dataToSendToServer"
     :imgList="imageDatas"
     v-on:updateImageList="updateImageListFromComp"
-    :currentImage="currentImg" 
+    :currentImage="currentImg"
     v-on:setCurrentImg="setCurrentImgFromComponent"
     v-on:ismodified="dataToSendToServer=true"
-    :currentKWData = "currentKeywordDatas"
-    v-on:updateKeywordData= "updateKeywordDataFromComponent"
-    :allKeywords = "keywords"
-    v-on:updateAllKeywords = "updateAllKeywordsFromComponent"
-    v-on:sendKWTableToServer = "SendFullKWTable = true"
+    :currentKWData="currentKeywordDatas"
+    v-on:updateKeywordData="updateKeywordDataFromComponent"
+    :allKeywords="keywords"
+    v-on:updateAllKeywords="updateAllKeywordsFromComponent"
+    v-on:sendKWTableToServer="SendFullKWTable = true"
+    v-on:reloadKeywordTable="getKeyWordsFromServer"
   >
-</oneImgComp>
+  </oneImgComp>
 </section>

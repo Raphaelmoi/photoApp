@@ -127,7 +127,7 @@ export default {
   flex-direction: column;
   align-items: center;
   flex: 2;
-  width: 60%;
+  /* width: 60%; */
 }
 .inputBoxInfo {
   display: flex;

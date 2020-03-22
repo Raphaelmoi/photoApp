@@ -1,29 +1,31 @@
 <template>
-    <div class="keywordBox">
-      <div
-        v-for="(keyword, index) in keywords"
-        :class="getKeywordClass(keyword[2], keyword[0])"
-        :key="index"
-        @click="addKeyWord(index)"
-      >{{ keyword[0] }}</div>
-    </div>
+  <div class="keywordBox">
+    <div
+      v-for="(keyword, index) in keywords"
+      :class="getKeywordClass(keyword[2], keyword[0])"
+      :key="index"
+      @click="addKeyWord(index)"
+    >{{ keyword[0] }}</div>
+  </div>
 </template>
 
 <script>
-
 export default {
   name: "keywordComponent",
 
   props: ["keywords", "imgname", "diapoName"],
   data() {
-      return {
-        datachanged: false
-      }
+    return {
+      datachanged: false
+    };
   },
   methods: {
     //set or unset a keyword for an image
     addKeyWord(index) {
       let imgList = this.keywords[index][2];
+      if (imgList === undefined) {
+        imgList = [];
+      }
       let isCurrentCategory = false;
       if (this.keywords[index][0] == this.diapoName) {
         isCurrentCategory = true;
@@ -34,6 +36,7 @@ export default {
           isAlreadyOnList = true;
         }
       }
+
       if (isAlreadyOnList && isCurrentCategory) {
         let a = confirm(
           "Attention! cette action va supprimer l'image de ce diaporama"
@@ -52,21 +55,25 @@ export default {
         this.keywords[index][2].push(this.imgname);
         // alert('l-actionajoute l-image au diaporama' );
       }
-      this.datachanged=true;
-      this.$emit('isModified')
+      this.datachanged = true;
+      this.$emit("isModified");
     },
     //return different class name depend if a keyword is selected or not
     getKeywordClass(imagesList, diapo) {
-      for (let i = 0; i < imagesList.length; i++) {
-        if (imagesList.indexOf(this.imgname) >= 0) {
-          if (diapo == this.diapoName) {
-            return "keyword selectedCurrentDiapo";
+      if (imagesList && imagesList.length !== 0) {
+        for (let i = 0; i < imagesList.length; i++) {
+          if (imagesList.indexOf(this.imgname) >= 0) {
+            if (diapo == this.diapoName) {
+              return "keyword selectedCurrentDiapo";
+            } else {
+              return "keyword selected";
+            }
           } else {
-            return "keyword selected";
+            return "keyword";
           }
-        } else {
-          return "keyword";
         }
+      } else {
+        return "keyword";
       }
     }
   }

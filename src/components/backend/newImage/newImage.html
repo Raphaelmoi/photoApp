@@ -105,7 +105,7 @@
           <span class="closePanel" @click="onClickAddKeyword = false">X</span>
           <label for="newKeyword" class="">Créer un diaporama</label>
           <div>
-            <input type="text" v-model="newKeyword" />
+            <input type="text" v-model="newKeyword" v-on:keyup.enter='createNewKeyWord(false)' />
             <i class="fas fa-plus" @click="createNewKeyWord(false)"></i>
 
             <a

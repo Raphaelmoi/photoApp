@@ -42,24 +42,24 @@ export default {
 
   methods: {
     setCurrentImgFromComponent(id) {
-      return this.currentImg = id;
+      return (this.currentImg = id);
     },
-    setImgOrderFromComponent(array){
-      return this.imageDatas = array;
+    setImgOrderFromComponent(array) {
+      return (this.imageDatas = array);
     },
-    updateImageListFromComp(array){ 
-      return this.imageDatas = array;
+    updateImageListFromComp(array) {
+      return (this.imageDatas = array);
     },
-    updateKeywordDataFromComponent(array){
-      return this.currentKeywordDatas = array
+    updateKeywordDataFromComponent(array) {
+      return (this.currentKeywordDatas = array);
     },
-    updateAllKeywordsFromComponent(array){
-      if (!this.dataToSendToServer ) {
+    updateAllKeywordsFromComponent(array) {
+      if (!this.dataToSendToServer) {
         this.dataToSendToServer = true;
       }
-      return this.keywords = array;
+      return (this.keywords = array);
     },
-    
+
     deleteDiaporama() {
       if (
         confirm(
@@ -90,7 +90,7 @@ export default {
     updateKeywordsTable() {
       let arrayToSend = this.keywords;
 
-      for(let item of arrayToSend) {
+      for (let item of arrayToSend) {
         let newArray = "";
         for (let i = 0; i < item[2].length; i++) {
           if (i === 0) {
@@ -101,10 +101,7 @@ export default {
       }
 
       let formData = new FormData();
-      formData.append(
-        "fullKeywordTable",
-        JSON.stringify(arrayToSend)
-      );
+      formData.append("fullKeywordTable", JSON.stringify(arrayToSend));
 
       let req = this.phpLink + "?action=updateFullKWTable";
       axios
@@ -114,20 +111,16 @@ export default {
           }
         })
         .then(
-          response => (
-            (this.$store.commit('increment', response.data))
-            // (this.phpResponse = response.data)
-          )
+          response => this.$store.commit("increment", response.data)
+          // (this.phpResponse = response.data)
         )
         .catch(function(error) {
           console.log(error);
         });
-     },
-
-
+    },
 
     updateThisDiapo() {
-      if(this.SendFullKWTable){
+      if (this.SendFullKWTable) {
         this.updateKeywordsTable();
       }
       // recuperer nvelle ordre des images
@@ -156,10 +149,12 @@ export default {
         .then(
           response => (
             // (this.phpResponse = response.data),
-            this.$store.commit('increment', 'Les modifications ont été apportées'),
-            this.dataToSendToServer = false,
-            this.$router.push({ name: "AllImages"})
-
+            this.$store.commit(
+              "increment",
+              "Les modifications ont été apportées"
+            ),
+            (this.dataToSendToServer = false),
+            this.$router.push({ name: "AllImages" })
           )
         )
         .catch(function(error) {
@@ -171,15 +166,55 @@ export default {
       return axios
         .get(req)
         .then(response => {
-          for (let index = 0; index < response.data.length; index++) {
-            this.keywords.push([
-              response.data[index].keywords,
-              response.data[index].id,
-              response.data[index].imageName.split("|"),
-              response.data[index].main_image
-            ]);
-            // this.selectedKeyWords.push([]);
+          console.log(response.data);
+          if (this.keywords.length === 0) {
+            for (let index = 0; index < response.data.length; index++) {
+              if (response.data[index].imageName !== null) {
+                this.keywords.push([
+                  response.data[index].keywords,
+                  response.data[index].id,
+                  response.data[index].imageName.split("|"),
+                  response.data[index].main_image
+                ]);
+              } else {
+                this.keywords.push([
+                  response.data[index].keywords,
+                  response.data[index].id,
+                  [],
+                  ""
+                ]);
+              }
+            }
+          } else {
+            this.keywords = [];
+            for (let index = 0; index < response.data.length; index++) {
+              console.log(
+                this.keywords.indexOf(response.data[index].imageName)
+              );
+
+              if (this.keywords.indexOf(response.data[index].keywords) === -1) {
+                if (response.data[index].imageName !== null) {
+                  this.keywords.push([
+                    response.data[index].keywords,
+                    response.data[index].id,
+                    response.data[index].imageName.split("|"),
+                    response.data[index].main_image
+                  ]);
+                } else {
+                  this.keywords.push([
+                    response.data[index].keywords,
+                    response.data[index].id,
+                    [],
+                    ""
+                  ]);
+                }
+                // this.keywords = newTab;
+                // this.$set(this.keywords, newTab);
+              }
+            }
           }
+
+          // this.selectedKeyWords.push([]);
         })
         .catch(function(error) {
           console.log(error);
@@ -210,10 +245,10 @@ export default {
           console.log(error);
         });
     },
-    areYouSure(){
-      let a  = confirm('Voulez vous quitter la page sans sauvegarder ?');
+    areYouSure() {
+      let a = confirm("Voulez vous quitter la page sans sauvegarder ?");
       if (a) {
-        this.$router.push({ name: "AllImages"})
+        this.$router.push({ name: "AllImages" });
       }
     }
   }

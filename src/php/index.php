@@ -44,6 +44,11 @@ try {
                 $controller -> updateFullKeywordTable(json_decode($_POST['fullKeywordTable']), true);
             }
         }
+        elseif( $_GET['action'] == 'newdiapo') {
+            if (isset($_POST['datas'])) {
+                $controller -> createNewDiapo($_POST['datas']);
+            }
+        }
     }
 }
 catch(Exception $e) {
