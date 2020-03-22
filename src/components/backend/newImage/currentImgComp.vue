@@ -13,20 +13,22 @@
       <div>
         <div class="keywordBox">
           <div
-            v-bind:class="getClass(currentIndex, keyword[0])"
             v-for="keyword in keywords"
+            v-bind:class="getClass(currentIndex, keyword[0])"
             :key="keyword[0]"
             @click="addKeyWord(currentIndex, keyword)"
           >{{ keyword[0] }}</div>
+            <i class="fas fa-plus" style="background:lightgray;" @click="onClickAddKeyword = !onClickAddKeyword"></i>
+
         </div>
 
         <div class="inputBoxInfo">
           <label for="legend">Légende</label>
-          <input type="text" name="legend" v-model="legend[currentIndex]" />
+          <input type="text" name="legend" v-model="legend" />
         </div>
         <div class="inputBoxInfo">
           <label for="description">Description (alt)</label>
-          <input type="text" name="description" v-model="description[currentIndex]" />
+          <input type="text" name="description" v-model="description" />
         </div>
       </div>
 
@@ -37,22 +39,31 @@
 <script>
 export default {
   name: "currentImgComp",
-  props: ["isDelete", "imgUrl", "kwList", "currentIndex", "selectKW", "legende", "desc"],
+  props: ["isDelete", "imgUrl", "kwList", "currentIndex", "selectKW", "legende", "desc", "addKW"],
 
   computed: {
+
+    onClickAddKeyword:{
+        get() {
+          return this.addKW;
+        },
+        set(newVal){
+          this.$emit("update:addKW", newVal);
+        }
+    },
     keywords: {
       get() {
         return this.kwList;
       },
-      set(newVal) {
-        this.$emit("setKwList", newVal);
+      set() {
       }
     },
     selectedKeyWords: {
         get() {
             return this.selectKW;
         },
-        set(){
+        set(newVal){
+          this.$emit("update:selectKW", newVal);
         }
     },
     legend: {
@@ -60,7 +71,7 @@ export default {
             return this.legende;
         },
         set(val){
-            return this.$emit('upLegend', val)
+          return this.$emit("update:legende", val)
         }
     },
     description: {
@@ -68,33 +79,29 @@ export default {
             return this.desc;
         },
         set(val){
-            return this.$emit('upDesc', val)
+            return this.$emit('update:desc', val)
         }
     }
   },
   methods: {
     //return different class name depend if a keyword is selected or not
     getClass (imgId,  categoryName) {
-      if (this.selectedKeyWords[imgId].indexOf(categoryName) >= 0) {
-        return 'keyword selected'
-      } else {
-        return 'keyword '
-      }
+
+        if (this.selectedKeyWords.indexOf(categoryName) >= 0) {
+          return 'keyword selected'
+        } else {
+          return 'keyword '
+        }
     }, 
         //set or unset a keyword for an image
     addKeyWord (imgId, keyword) {
-      // let id = parseInt(keyword[1]);
-      let value = this.selectedKeyWords[imgId].indexOf(keyword[0])
-    //   console.log( this.selectedKeyWords[imgId])
-
+      let value = this.selectedKeyWords.indexOf(keyword[0])
       if (value >= 0) {
-        this.selectedKeyWords[imgId].splice(value, 1)
+        this.selectedKeyWords.splice(value, 1)
       } else {
-        this.selectedKeyWords[imgId].push(keyword[0])
+        this.selectedKeyWords.push(keyword[0])
       }
-    //   console.log(this.selectedKeyWords)
     },
-
   }
 };
 </script>
@@ -118,12 +125,14 @@ export default {
 .itemImg > div {
   display: flex;
   flex-direction: column;
+  align-items: center;
   flex: 2;
+  width: 60%;
 }
 .inputBoxInfo {
   display: flex;
   align-items: center;
-  margin: 0 30%;
+  width: 100%;
 }
 .inputBoxInfo label {
   flex: 1;

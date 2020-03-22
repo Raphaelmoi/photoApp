@@ -11,24 +11,19 @@ export default {
   data() {
     return {
       phpLink: "http://localhost/my-photos/src/php/index.php",
-      newKeyword: null,/*les nouveaux mot clefs ajouté*/
-      keywords: [],/*les nouveaux mot récupéré db*/
-      files: [],/*la liste des images importé*/
-      itemsBox: [],
-
-      item: {
-        name:"",
-        legend: "",
-        description: "",
-        qttUtillisation: 0,
-        keyword: [],
-        fileIsDeleted: "",
-        imageUrl: "",
-      },
-
+      newKeyword: null,
+      selectedKeyWords: [],
+      keywords: [],
+      files: [],
+      imageUrlList: [],
+      legend: [],
+      description: [],
+      qttUtillisation: [],
+      fileName: [],
       newKeywords: [],
       onClickAddKeyword: false,
       currentImg: 0,
+      fileIsDeleted: [],
       imgAlreadyOnDb: []
     };
   },
@@ -38,7 +33,6 @@ export default {
   created: function() {
     this.getKeyWordsFromServer();
     this.getImgDatasFromServer();
-    
   },
   destroyed: function() {
     document.documentElement.style.setProperty("--circle-radius", "40vw");
@@ -52,19 +46,10 @@ export default {
   },
 
   methods: {
-    createItem(){
-      
-    },
     isAlreadyOnDb(value = false) {
-      
         if (value == false) {
-          try {
-            value = this.itemsBox[this.currentImg].name;
-          } catch (error) {
-            return false
-          }
+          value = this.fileName[this.currentImg];
         }
-
         for (let i = 0; i < this.imgAlreadyOnDb.length; i++) {
           if (this.imgAlreadyOnDb[i] == value) {
             return true;
@@ -77,11 +62,11 @@ export default {
       let val =
         "Chaque image doit être associée à au moins un diaporama.  Informations manquantes pour les images aux index suivants : ";
 
-      for (let i = 0; i < this.files.length; i++) {
-        if (!this.isAlreadyOnDb(this.itemsBox[i].name)) {
+      for (let i = 0; i < this.selectedKeyWords.length; i++) {
+        if (!this.isAlreadyOnDb(this.fileName[i])) {
           if (
-            this.itemsBox[i].keyword.length == 0 &&
-            this.itemsBox[i].fileIsDeleted === ""
+            this.selectedKeyWords[i].length == 0 &&
+            this.fileIsDeleted[i] === ""
           ) {
             val += "<br/>" + (i + 1);
           }
@@ -89,15 +74,24 @@ export default {
       }
       this.$store.commit("increment", val);
     },
-    
+    confirmBeforeLeave() {
+      if (this.legend.length !== 0) {
+        let a = confirm("Etes vous sur de vouloir quitter sans sauvegarder ?");
+        if (a) {
+          this.$router.push({ name: "BackEndHome" });
+        }
+      } else {
+        this.$router.push({ name: "BackEndHome" });
+      }
+    },
     nbrImageNeedKW() {
       let val = 0;
       
-      for (let i = 0; i < this.files.length; i++) {
-        if (!this.isAlreadyOnDb(this.itemsBox[i].name)) {
+      for (let i = 0; i < this.selectedKeyWords.length; i++) {
+        if (!this.isAlreadyOnDb(this.fileName[i])) {
           if (
-            this.itemsBox[i].keyword.length == 0 &&
-            this.itemsBox[i].fileIsDeleted === ""
+            this.selectedKeyWords[i].length == 0 &&
+            this.fileIsDeleted[i] === ""
           ) {
             val++;
           }
@@ -106,32 +100,40 @@ export default {
       return val;
     },
 
-    
+    updateLegend(val) {
+      this.legend = val;
+    },
+    updateDescription(val) {
+      this.description = val;
+    },
     uploadImgOnFront() {
       let actualLength =  this.files.length
+      // this.files = this.$refs.myFiles.files;
+      // this.files = []
       for (let i = 0; i < this.$refs.myFiles.files.length; i++) {
         this.files.push(this.$refs.myFiles.files[i])
       }
       for (let index = actualLength; index < this.files.length; index++) {
-        
-        let currentItem = JSON.parse(JSON.stringify(this.item));
-
-        currentItem.imageUrl = URL.createObjectURL(this.files[index])
-        currentItem.name = this.files[index].name;
-        this.itemsBox.push(currentItem)
-
+        // add empty array for each imported element
+        this.selectedKeyWords.push([]);
+        // associate legend
+        this.legend.push("");
+        this.description.push("");
+        this.fileIsDeleted.push("");
+        this.qttUtillisation.push(0);
+        this.fileName.push(this.files[index].name)
+        // url list image
+        this.imageUrlList.push(URL.createObjectURL(this.files[index]));
       }
-      console.log(this.itemsBox);
-      
-    document.documentElement.style.setProperty("--circle-radius", "45vw");
+      document.documentElement.style.setProperty("--circle-radius", "45vw");
       //faire message erreur si 0
     },
 
     deleteImg() {
-      if (this.itemsBox[this.currentImg].fileIsDeleted === "") {
-        this.itemsBox[this.currentImg].fileIsDeleted = "deleted"
+      if (this.fileIsDeleted[this.currentImg] === "") {
+        this.$set(this.fileIsDeleted, this.currentImg, "deleted");
       } else {
-        this.itemsBox[this.currentImg].fileIsDeleted = ""
+        this.$set(this.fileIsDeleted, this.currentImg, "");
       }
     },
     getKeyWordsFromServer() {
@@ -168,16 +170,17 @@ export default {
     onClicPrepareDataBeforeSending() {
       let tableau = [];
       tableau.push({ newKeywords: this.newKeywords });
-
       for (let index = 0; index < this.files.length; index++) {
-        if (this.itemsBox[index].fileIsDeleted === "") {
-          this.itemsBox[index].qttUtillisation = this.itemsBox[index].keyword.length;
-          tableau.push(
-            this.itemsBox[index]
-          );
+        if (this.fileIsDeleted[index] === "") {
+          tableau.push({
+            name: this.files[index].name,
+            legend: this.legend[index],
+            description: this.description[index],
+            keyword: this.selectedKeyWords[index],
+            qttUtillisation: this.selectedKeyWords[index].length
+          });
         }
       }
-
       var json_arr = JSON.stringify(tableau);
       this.sendToServer(json_arr);
       this.$store.commit(
@@ -192,13 +195,14 @@ export default {
       let formData = new FormData();
       formData.append("datas", tableau);
       for (var i = 0; i < this.files.length; i++) {
-        if (this.itemsBox[i].fileIsDeleted  === "") {
+        if (this.fileIsDeleted[i] === "") {
           let file = this.files[i];
+          // let file = this.$refs.myFiles.files[i];
           formData.append("files[" + i + "]", file);
         }
       }
-      // console.log("...formData : ");
-      // console.log(...formData);
+      console.log("...formData : ");
+      console.log(...formData);
 
       let req = this.phpLink + "?action=newdatas";
 
@@ -235,25 +239,14 @@ export default {
     //Fleches
     next(direction) {
       let nextvalue = this.currentImg + direction;
-      if (nextvalue >= this.files.length) {
+      if (nextvalue >= this.legend.length) {
         this.currentImg = 0;
       } else if (nextvalue < 0) {
-        this.currentImg = this.files.length - 1;
+        this.currentImg = this.legend.length - 1;
       } else {
         this.currentImg = nextvalue;
       }
-    },
-
-    confirmBeforeLeave() {
-      if (this.files.length !== 0) {
-        let a = confirm("Etes vous sur de vouloir quitter sans sauvegarder ?");
-        if (a) {
-          this.$router.push({ name: "BackEndHome" });
-        }
-      } else {
-        this.$router.push({ name: "BackEndHome" });
-      }
-    },
+    }
   }
 };
 </script>
