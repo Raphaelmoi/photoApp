@@ -1,11 +1,11 @@
 <template>
   <div class="keywordBox">
     <div
-      v-for="(keyword, index) in keywords"
-      :class="getKeywordClass(keyword[2], keyword[0])"
+      v-for="(keyword, index) in $store.state.keywordTable"
+      :class="getKeywordClass(keyword.imageName, keyword.title)"
       :key="index"
-      @click="addKeyWord(index)"
-    >{{ keyword[0] }}</div>
+      @click="addKeyWord(keyword)"
+    >{{ keyword.keywords }}</div>
   </div>
 </template>
 
@@ -13,26 +13,27 @@
 export default {
   name: "keywordComponent",
 
-  props: ["keywords", "imgname", "diapoName"],
+  props: ["imgname", "diapoName"],
   data() {
     return {
-      datachanged: false
+      datachanged: false,
+      keywords: []
     };
   },
+
   methods: {
-    //set or unset a keyword for an image
-    addKeyWord(index) {
-      let imgList = this.keywords[index][2];
-      if (imgList === undefined) {
-        imgList = [];
+    addKeyWord(keyword) {
+      let imgList = keyword.imageName;
+      if (keyword.imageName === undefined || keyword.imageName == "") {
+        keyword.imageName = [];
       }
       let isCurrentCategory = false;
-      if (this.keywords[index][0] == this.diapoName) {
+      if (keyword.keywords == this.diapoName) {
         isCurrentCategory = true;
       }
       let isAlreadyOnList = false;
-      for (let i = 0; i < imgList.length; i++) {
-        if (imgList.indexOf(this.imgname) >= 0) {
+      for (let i = 0; i < keyword.imageName.length; i++) {
+        if (keyword.imageName.indexOf(this.imgname) >= 0) {
           isAlreadyOnList = true;
         }
       }
@@ -43,16 +44,16 @@ export default {
         );
         if (a) {
           const indexOfImg = element => element == this.imgname;
-          let id = this.keywords[index][2].findIndex(indexOfImg);
-          this.keywords[index][2].splice(id, 1);
+          let id = keyword.imageName.findIndex(indexOfImg);
+          keyword.imageName.splice(id, 1);
         }
       } else if (isAlreadyOnList) {
         const indexOfImg = element => element == this.imgname;
-        let id = this.keywords[index][2].findIndex(indexOfImg);
-        this.keywords[index][2].splice(id, 1);
+        let id = keyword.imageName.findIndex(indexOfImg);
+        keyword.imageName.splice(id, 1);
         // alert('l-action supprime l-image de n-importe qu-elle diaporamas ?' );
       } else {
-        this.keywords[index][2].push(this.imgname);
+        keyword.imageName.push(this.imgname);
         // alert('l-actionajoute l-image au diaporama' );
       }
       this.datachanged = true;

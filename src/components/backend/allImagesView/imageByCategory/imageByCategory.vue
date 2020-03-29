@@ -5,59 +5,40 @@
 import listimgVueComp from "@/components/backend/allImagesView/imageByCategory/listimgVueComp.vue";
 import oneImgComp from "@/components/backend/allImagesView/imageByCategory/oneImgComp.vue";
 
-// import phpResponse from './../../phpresponse/phpresponse.js'
-import phpResponse from "@/components/backend/phpresponse/phpresponse.js";
 const axios = require("axios");
 
 export default {
   data() {
     return {
-      phpLink: "http://localhost/my-photos/src/php/index.php",
       category: 0, //set the kind of view
       currentKeywordDatas: [],
       currentImg: 0,
-      imageDatas: [],
       settingPanel: false,
       dataToSendToServer: false,
       SendFullKWTable: false,
       modifyTitle: false,
-      phpResponse: "",
-      keywords: []
+      currentView: 0
     };
   },
   components: {
-    phpResponse,
     listimgVueComp,
     oneImgComp
   },
   mounted: function() {
-    this.getImgDatasFromServer();
-    this.getKeyWordsFromServer();
-
-    this.currentKeywordDatas = this.$route.params.selectedKeyword;
-    let imageNames = this.currentKeywordDatas[2].split("|");
-    this.currentKeywordDatas[2] = imageNames;
+    const id = this.$route.params.id;
+    let find = -1;
+    for (let i = 0; i < this.$store.state.keywordTable.length; i++) {
+      if (this.$store.state.keywordTable[i].keywords === id) {
+        find = i;
+      }
+    }
+    this.currentView = find;
   },
   created: function() {},
 
   methods: {
     setCurrentImgFromComponent(id) {
       return (this.currentImg = id);
-    },
-    setImgOrderFromComponent(array) {
-      return (this.imageDatas = array);
-    },
-    updateImageListFromComp(array) {
-      return (this.imageDatas = array);
-    },
-    updateKeywordDataFromComponent(array) {
-      return (this.currentKeywordDatas = array);
-    },
-    updateAllKeywordsFromComponent(array) {
-      if (!this.dataToSendToServer) {
-        this.dataToSendToServer = true;
-      }
-      return (this.keywords = array);
     },
 
     deleteDiaporama() {
@@ -68,10 +49,14 @@ export default {
       ) {
         //rajouter id de toutes les images pour leur soustraire 1 ds champs nbr_utilisation
         let formData = new FormData();
-        formData.append("id", JSON.stringify(this.currentKeywordDatas[1]));
+        formData.append(
+          "id",
+          JSON.stringify(this.$store.state.keywordTable[this.currentView].id)
+        );
         formData.append("imageDatas", JSON.stringify(this.imageDatas));
 
-        let req = this.phpLink + "?action=deleteFullDiaporama";
+        let req =
+          "http://localhost/my-photos/src/php/index.php?action=deleteFullDiaporama";
         axios
           .post(req, formData, {
             headers: {
@@ -87,164 +72,14 @@ export default {
           });
       }
     },
-    updateKeywordsTable() {
-      let arrayToSend = this.keywords;
-
-      for (let item of arrayToSend) {
-        let newArray = "";
-        for (let i = 0; i < item[2].length; i++) {
-          if (i === 0) {
-            newArray += item[2][i];
-          } else newArray += "|" + item[2][i];
-        }
-        item[2] = newArray;
-      }
-
-      let formData = new FormData();
-      formData.append("fullKeywordTable", JSON.stringify(arrayToSend));
-
-      let req = this.phpLink + "?action=updateFullKWTable";
-      axios
-        .post(req, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        })
-        .then(
-          response => this.$store.commit("increment", response.data)
-          // (this.phpResponse = response.data)
-        )
-        .catch(function(error) {
-          console.log(error);
-        });
-    },
 
     updateThisDiapo() {
-      if (this.SendFullKWTable) {
-        this.updateKeywordsTable();
-      }
-      // recuperer nvelle ordre des images
-
-      let newArray = "";
-      for (let i = 0; i < this.imageDatas.length; i++) {
-        if (i === 0) {
-          newArray += this.imageDatas[i].title;
-        } else newArray += "|" + this.imageDatas[i].title;
-      }
-      this.currentKeywordDatas[2] = newArray;
-      let formData = new FormData();
-      formData.append(
-        "currentKeywordDatas",
-        JSON.stringify(this.currentKeywordDatas)
-      );
-      formData.append("imageDatas", JSON.stringify(this.imageDatas));
-
-      let req = this.phpLink + "?action=updatediaporama";
-      axios
-        .post(req, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        })
-        .then(
-          response => (
-            // (this.phpResponse = response.data),
-            this.$store.commit(
-              "increment",
-              "Les modifications ont été apportées"
-            ),
-            (this.dataToSendToServer = false),
-            this.$router.push({ name: "AllImages" })
-          )
-        )
-        .catch(function(error) {
-          console.log(error);
-        });
+      this.$store.dispatch("updateKeywordsTable");
+      this.$store.dispatch("updateImageTable");
+      this.dataToSendToServer = false;
+      this.$router.push({ name: "AllImages" });
     },
-    getKeyWordsFromServer() {
-      let req = this.phpLink + "?action=getKeyWords";
-      return axios
-        .get(req)
-        .then(response => {
-          console.log(response.data);
-          if (this.keywords.length === 0) {
-            for (let index = 0; index < response.data.length; index++) {
-              if (response.data[index].imageName !== null) {
-                this.keywords.push([
-                  response.data[index].keywords,
-                  response.data[index].id,
-                  response.data[index].imageName.split("|"),
-                  response.data[index].main_image
-                ]);
-              } else {
-                this.keywords.push([
-                  response.data[index].keywords,
-                  response.data[index].id,
-                  [],
-                  ""
-                ]);
-              }
-            }
-          } else {
-            this.keywords = [];
-            for (let index = 0; index < response.data.length; index++) {
-              console.log(
-                this.keywords.indexOf(response.data[index].imageName)
-              );
 
-              if (this.keywords.indexOf(response.data[index].keywords) === -1) {
-                if (response.data[index].imageName !== null) {
-                  this.keywords.push([
-                    response.data[index].keywords,
-                    response.data[index].id,
-                    response.data[index].imageName.split("|"),
-                    response.data[index].main_image
-                  ]);
-                } else {
-                  this.keywords.push([
-                    response.data[index].keywords,
-                    response.data[index].id,
-                    [],
-                    ""
-                  ]);
-                }
-                // this.keywords = newTab;
-                // this.$set(this.keywords, newTab);
-              }
-            }
-          }
-
-          // this.selectedKeyWords.push([]);
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-    },
-    getImgDatasFromServer() {
-      let req = this.phpLink + "?action=getImages";
-      return axios
-        .get(req)
-        .then(response => {
-          // this.imageDatas = response.data;
-          var parsedobj = JSON.parse(JSON.stringify(response.data));
-          let nextarr = [];
-          for (let i = 0; i < this.currentKeywordDatas[2].length; i++) {
-            let b = -1;
-            for (let j = 0; j < parsedobj.length; j++) {
-              if (this.currentKeywordDatas[2][i] === parsedobj[j].title) {
-                b = j;
-              }
-            }
-            if (b !== -1) {
-              nextarr.push(parsedobj[b]);
-            }
-          }
-          this.imageDatas = nextarr;
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-    },
     areYouSure() {
       let a = confirm("Voulez vous quitter la page sans sauvegarder ?");
       if (a) {

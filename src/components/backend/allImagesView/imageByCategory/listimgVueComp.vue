@@ -1,21 +1,46 @@
 <template>
-  <draggable v-model="imageList" @end="sendToParents">
-    <transition-group class="imgSquare">
-      <article
-        v-for="(image, index) in  imageList"
-        v-bind:key="`image-${index}`"
-        v-on:click="zoomOnImg(index)"
-        :class="getImgSqureClass(index)"
+  <div>
+    <aside>
+      <a class="asideBtn btn1">
+        <i class="fas fa-exchange-alt"></i>
+        <span class="ab_btn">
+          Vous pouvez changer l'ordre
+          des images en cliquant sur une image et en la déplacent à la position voulu
+        </span>
+      </a>
+      <a class="asideBtn btn1">
+        <i class="fas fa-check-double"></i>
+      </a>
+      <a class="asideBtn btn1">
+        <i class="far fa-images"></i>
+      </a>
+    </aside>
+    <div class="containerGrid">
+      <draggable
+        v-model="$store.state.keywordTable[currentDiapo].imageName"
+        @end="sendToParents"
+        v-bind="dragOptions"
       >
-        <img :src="require('@/assets/images/'+ imageList[index].title)" />
-        <div class="imgPanel">
-          <input type="checkbox" />
-          <i class="fas fa-retweet fa-2x"></i>
-          <i class="fas fa-trash fa-2x"></i>
-        </div>
-      </article>
-    </transition-group>
-  </draggable>
+        <transition-group class="imgSquare">
+          <article
+            v-for="(image, index) in  $store.state.keywordTable[currentDiapo].imageName"
+            v-bind:key="`image-${index}`"
+            v-on:click="zoomOnImg(index)"
+            :class="getImgSqureClass(index)"
+          >
+            <img
+              :src="require('@/assets/images/'+ $store.state.keywordTable[currentDiapo].imageName[index])"
+            />
+            <div class="imgPanel">
+              <input type="checkbox" />
+              <i class="fas fa-retweet fa-2x"></i>
+              <i class="fas fa-trash fa-2x"></i>
+            </div>
+          </article>
+        </transition-group>
+      </draggable>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -23,31 +48,33 @@ import draggable from "vuedraggable";
 
 export default {
   name: "listimgVueComponent",
-  props: ["imgList", "currentTitle"],
+  props: ["currentDiapo"],
   components: {
     draggable
   },
   data() {
     return {
-        // imageList: this.imgList
+      // imageList: this.imgList
     };
   },
   computed: {
-        imageList: {
-            get() {
-                return this.imgList;
-            },
-            set(newVal) {
-                this.$emit('setImgOrder', newVal);
-            }
-        }
-    },
+    dragOptions() {
+      return {
+        animation: 600,
+        disabled: false,
+        ghostClass: "ghost"
+      };
+    }
+  },
   methods: {
     getImgSqureClass(index) {
-      if (this.currentTitle == this.imageList[index].title) {
+      if (
+        this.$store.state.keywordTable[this.currentDiapo].main_image ==
+        this.$store.state.keywordTable[this.currentDiapo].imageName[index]
+      ) {
         return "selectedImg";
       }
-      if (this.imageList[index].alt == "") {
+      if (this.$store.state.imagesTable[index].alt == "") {
         return "missingAlt";
       }
     },
@@ -56,8 +83,8 @@ export default {
       this.$emit("setCategory");
       this.$emit("setCurrentImg", index);
     },
-    sendToParents(){
-        this.$emit('ismodified'); 
+    sendToParents() {
+      this.$emit("ismodified");
     }
   }
 };
@@ -65,9 +92,21 @@ export default {
 
 
 <style>
-.imgSquareContainer {
-  width: 100%;
+aside {
+  position: absolute;
+  left: 0;
+  top: 8%;
+  bottom: 8%;
+  width: 9%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.containerGrid {
+  width: 91%;
   height: 100%;
+  margin-left: 9%;
 }
 .imgSquare {
   display: flex;
@@ -97,12 +136,20 @@ export default {
   cursor: -moz-grab;
 }
 .imgSquare article:active {
-  cursor: grabbing;
+  /* cursor: none;
   cursor: -webkit-grabbing;
-  cursor: -moz-grabbing;
+  cursor: -moz-grabbing; */
   box-shadow: 0 0 0 3px white;
   opacity: 0.2;
   /* transition: all 1s ease-in */
+}
+.mydragClass {
+  cursor: grabbing;
+  cursor: -webkit-grabbing;
+  cursor: -moz-grabbing;
+  background: olive;
+  border: 20px white solid;
+  padding: 10px;
 }
 .imgSquare img:hover {
   object-position: bottom right;
@@ -135,5 +182,58 @@ export default {
 }
 .missingAlt {
   box-shadow: 0 0 0 1px tomato;
+}
+
+/* .ghost {
+  opacity: 0.8;
+  border: 4px gray solid;
+  background: #c8ebfb;
+} */
+
+.asideBtn {
+  position: relative;
+  display: flex;
+}
+.ab_btn {
+  position: absolute;
+  width: 0;
+  opacity: 0;
+  font-size: 0;
+  height: 100%;
+  z-index: 100;
+  background-color: rgba(255, 255, 255, 0.7);
+  border: 1px white solid;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 6rem;
+  border-radius: 50px;
+  color: black;
+  font-size: 1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: all 1s ease;
+  flex-wrap: nowrap;
+  /* right: -200px; */
+}
+.asideBtn i {
+  font-size: 2.5em;
+  border-radius: 50%;
+  border: 1px white solid;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 1s ease;
+}
+.asideBtn:hover i {
+  transition: all 1s ease;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+.asideBtn:hover .ab_btn {
+  /* display: flex; */
+  width: 450px;
+  opacity: 1;
+  font-size: 1rem;
+  transition: all 1s ease;
+  animation-name: textDelay;
 }
 </style>

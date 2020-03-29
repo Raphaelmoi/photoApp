@@ -18,11 +18,12 @@ export default {
   data() {
     return {
       newKeyword: null,
+      newKeywordsBox: [],
       phpLink: "http://localhost/my-photos/src/php/index.php"
     };
   },
   name: "newKeyWordComp",
-  props: ["isOpen", "allKW", "newKW", "sendToServer", "cssPosition"],
+  props: ["isOpen", "sendToServer", "cssPosition"],
 
   computed: {
     needAxios: {
@@ -42,22 +43,6 @@ export default {
       set(newVal) {
         this.$emit("update:isOpen", newVal);
       }
-    },
-    keywords: {
-      get() {
-        return this.allKW;
-      },
-      set(newVal) {
-        this.$emit("update:allKW", newVal);
-      }
-    },
-    newKeywordsBox: {
-      get() {
-        return this.newKW;
-      },
-      set(newVal) {
-        this.$emit("update:newKW", newVal);
-      }
     }
   },
   methods: {
@@ -65,29 +50,27 @@ export default {
       if (this.newKeyword !== null && this.newKeyword !== "") {
         //this.keyword = la liste lu en front, ajoute le mot sans refaire requte php
         //new.keywords, mots a ajouter avec les nvelles photos requete php
-        console.log(this.newKeyword);
-        console.log(this.keywords);
+        // console.log(this.newKeyword);
 
-        if (
-          this.keywords[0] !== this.newKeyword &&
-          this.newKeywordsBox.indexOf(this.newKeyword) < 0
-        ) {
-          // this.keywords.push([
-          //   this.newKeyword,
-          //   this.keywords.length + 1,
-          //   [],
-          //   ""
-          // ]);
-
-          this.newKeywordsBox.push(this.newKeyword);
+        if (this.newKeywordsBox.indexOf(this.newKeyword) < 0) {
+          let find = -1;
+          for (let item of this.$store.state.keywordTable) {
+            if (item.keywords === this.newKeyword) {
+              find++;
+            }
+          }
+          if (find < 0) {
+            this.newKeywordsBox.push(this.newKeyword);
+          }
 
           if (this.needAxios) {
-            console.log(this.needAxios);
             this.sendDiapoToServer(this.newKeyword);
           }
-          // this.keywords.push([]);
-          // this.keywords.splice(-1, 1);
+
+          //add to store
+          this.$store.commit("addKeyword", this.newKeyword);
           this.$emit("change");
+
           this.newKeyword = "";
         }
       }
@@ -101,8 +84,7 @@ export default {
       formData.append("datas", newKW);
 
       let req = this.phpLink + "?action=newdiapo";
-      console.log("before sending");
-      console.log(newKW);
+      console.log("sendDiapoToServer");
 
       axios
         .post(req, formData, {
@@ -110,10 +92,11 @@ export default {
             "Content-Type": "multipart/form-data"
           }
         })
-        .then(response => console.log(response.data))
+        .then(response => this.$store.dispatch("loadData"))
         .catch(function(error) {
           console.log(error);
         });
+      this.$emit("change");
     }
   }
 };

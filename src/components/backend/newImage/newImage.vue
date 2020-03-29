@@ -3,6 +3,7 @@
 
 <script>
 import currentImgComponent from "@/components/backend/newImage/currentImgComp.vue";
+import newKeyWordComp from "@/components/backend/newKeyWordComp.vue";
 
 const axios = require("axios");
 
@@ -11,34 +12,31 @@ export default {
   data() {
     return {
       phpLink: "http://localhost/my-photos/src/php/index.php",
-      newKeyword: null,/*les nouveaux mot clefs ajouté*/
-      keywords: [],/*les nouveaux mot récupéré db*/
-      files: [],/*la liste des images importé*/
+      newKeyword: null /*les nouveaux mot clefs ajouté*/,
+      files: [] /*la liste des images importé*/,
       itemsBox: [],
 
       item: {
-        name:"",
+        name: "",
         legend: "",
         description: "",
         qttUtillisation: 0,
         keyword: [],
         fileIsDeleted: "",
-        imageUrl: "",
+        imageUrl: ""
       },
 
       newKeywords: [],
       onClickAddKeyword: false,
-      currentImg: 0,
-      imgAlreadyOnDb: []
+      currentImg: 0
     };
   },
   components: {
-    currentImgComponent
+    currentImgComponent,
+    newKeyWordComp
   },
   created: function() {
-    this.getKeyWordsFromServer();
-    this.getImgDatasFromServer();
-    
+    // this.getKeyWordsFromServer();
   },
   destroyed: function() {
     document.documentElement.style.setProperty("--circle-radius", "40vw");
@@ -52,25 +50,21 @@ export default {
   },
 
   methods: {
-    createItem(){
-      
-    },
     isAlreadyOnDb(value = false) {
-      
-        if (value == false) {
-          try {
-            value = this.itemsBox[this.currentImg].name;
-          } catch (error) {
-            return false
-          }
+      if (value == false) {
+        try {
+          value = this.itemsBox[this.currentImg].name;
+        } catch (error) {
+          return false;
         }
+      }
 
-        for (let i = 0; i < this.imgAlreadyOnDb.length; i++) {
-          if (this.imgAlreadyOnDb[i] == value) {
-            return true;
-          }
+      for (let i = 0; i < this.$store.state.imagesTable.length; i++) {
+        if (this.$store.state.imagesTable[i].title == value) {
+          return true;
         }
-        return false;
+      }
+      return false;
     },
 
     missingImgKeywordMsg() {
@@ -89,10 +83,10 @@ export default {
       }
       this.$store.commit("increment", val);
     },
-    
+
     nbrImageNeedKW() {
       let val = 0;
-      
+
       for (let i = 0; i < this.files.length; i++) {
         if (!this.isAlreadyOnDb(this.itemsBox[i].name)) {
           if (
@@ -106,63 +100,30 @@ export default {
       return val;
     },
 
-    
     uploadImgOnFront() {
-      let actualLength =  this.files.length
+      let actualLength = this.files.length;
       for (let i = 0; i < this.$refs.myFiles.files.length; i++) {
-        this.files.push(this.$refs.myFiles.files[i])
+        this.files.push(this.$refs.myFiles.files[i]);
       }
       for (let index = actualLength; index < this.files.length; index++) {
-        
         let currentItem = JSON.parse(JSON.stringify(this.item));
 
-        currentItem.imageUrl = URL.createObjectURL(this.files[index])
+        currentItem.imageUrl = URL.createObjectURL(this.files[index]);
         currentItem.name = this.files[index].name;
-        this.itemsBox.push(currentItem)
-
+        this.itemsBox.push(currentItem);
       }
       console.log(this.itemsBox);
-      
-    document.documentElement.style.setProperty("--circle-radius", "45vw");
+      this.currentImg = actualLength;
+      document.documentElement.style.setProperty("--circle-radius", "45vw");
       //faire message erreur si 0
     },
 
     deleteImg() {
       if (this.itemsBox[this.currentImg].fileIsDeleted === "") {
-        this.itemsBox[this.currentImg].fileIsDeleted = "deleted"
+        this.itemsBox[this.currentImg].fileIsDeleted = "deleted";
       } else {
-        this.itemsBox[this.currentImg].fileIsDeleted = ""
+        this.itemsBox[this.currentImg].fileIsDeleted = "";
       }
-    },
-    getKeyWordsFromServer() {
-      let req = this.phpLink + "?action=getKeyWords";
-      return axios
-        .get(req)
-        .then(response => {
-          for (let index = 0; index < response.data.length; index++) {
-            this.keywords.push([
-              response.data[index].keywords,
-              response.data[index].id
-            ]);
-          }
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-    },
-    getImgDatasFromServer() {
-      let req = this.phpLink + "?action=getImages";
-      return axios
-        .get(req)
-        .then(response => {
-          this.imgAlreadyOnDb = [];
-          for (let i = 0; i < response.data.length; i++) {
-            this.imgAlreadyOnDb.push(response.data[i].title);
-          }
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
     },
 
     onClicPrepareDataBeforeSending() {
@@ -171,10 +132,10 @@ export default {
 
       for (let index = 0; index < this.files.length; index++) {
         if (this.itemsBox[index].fileIsDeleted === "") {
-          this.itemsBox[index].qttUtillisation = this.itemsBox[index].keyword.length;
-          tableau.push(
-            this.itemsBox[index]
-          );
+          this.itemsBox[index].qttUtillisation = this.itemsBox[
+            index
+          ].keyword.length;
+          tableau.push(this.itemsBox[index]);
         }
       }
 
@@ -184,21 +145,20 @@ export default {
         "increment",
         "Les nouvelles images ont bien été télécharger"
       );
-
-      this.$router.push({ name: "BackEndHome" });
+      setTimeout(() => {
+        this.$router.push({ name: "BackEndHome" });
+      }, 100);
     },
 
     sendToServer(tableau) {
       let formData = new FormData();
       formData.append("datas", tableau);
       for (var i = 0; i < this.files.length; i++) {
-        if (this.itemsBox[i].fileIsDeleted  === "") {
+        if (this.itemsBox[i].fileIsDeleted === "") {
           let file = this.files[i];
           formData.append("files[" + i + "]", file);
         }
       }
-      // console.log("...formData : ");
-      // console.log(...formData);
 
       let req = this.phpLink + "?action=newdatas";
 
@@ -208,30 +168,12 @@ export default {
             "Content-Type": "multipart/form-data"
           }
         })
-        .then(/*response => (this.phpResponse = response.data)*/)
+        .then()
         .catch(function(error) {
           console.log(error);
         });
     },
 
-    createNewKeyWord(closePanel) {
-      if (this.newKeyword !== null && this.newKeyword !== "") {
-        //this.keyword = la liste lu en front, ajoute le mot sans refaire requte php
-        //new.keywords, mots a ajouter avec les nvelles photos requete php
-        if (
-          this.keywords.indexOf(this.newKeyword) < 0 &&
-          this.newKeywords.indexOf(this.newKeyword) < 0
-        ) {
-          this.keywords.push([this.newKeyword, this.keywords.length + 1]);
-          this.newKeywords.push(this.newKeyword);
-        }
-      }
-      // this.newKeyword = null;
-      if (closePanel) {
-        this.onClickAddKeyword = !this.onClickAddKeyword;
-      }
-      this.newKeyword = "";
-    },
     //Fleches
     next(direction) {
       let nextvalue = this.currentImg + direction;
@@ -253,7 +195,7 @@ export default {
       } else {
         this.$router.push({ name: "BackEndHome" });
       }
-    },
+    }
   }
 };
 </script>

@@ -17,7 +17,7 @@
 
     <!-- title of diaporama -->
     <h1 v-if="!modifyTitle">
-      {{ currentKeywordDatas[0] }}
+      {{ $store.state.keywordTable[currentView].keywords }}
       <i
         class="fas fa-pen"
         @click="modifyTitle = !modifyTitle; dataToSendToServer=true"
@@ -27,8 +27,8 @@
     <input
       class="titleInput"
       v-if="modifyTitle"
-      v-model="currentKeywordDatas[0]"
-      value="currentKeywordDatas[0]"
+      v-model="$store.state.keywordTable[currentView].keywords"
+      value="$store.state.keywordTable[currentView].keywords"
     />
     <!-- change the view type (grid or alone) -->
     <div>
@@ -49,7 +49,9 @@
         <a style="color:orangered; cursor: pointer;" @click="deleteDiaporama">
           <i class="fas fa-trash"></i>
           Supprimez le diaporama
-          <span style="font-weight: bold;">"{{ currentKeywordDatas[0] }}"</span>
+          <span style="font-weight: bold;"
+            >"{{ $store.state.keywordTable[currentView].keywords }}"</span
+          >
         </a>
         <a
           style="color:cadetblue; cursor: pointer;"
@@ -60,37 +62,25 @@
     </div>
   </div>
 
-  <phpResponse
-    :reponse="phpResponse"
-    v-on:resetReponse="phpResponse=''"
-  ></phpResponse>
-
   <listimgVueComp
+    :currentDiapo="currentView"
     v-if="category == 0"
     v-on:setCategory="category=1"
-    :imgList="imageDatas"
-    :currentTitle="currentKeywordDatas[3]"
     v-on:setCurrentImg="setCurrentImgFromComponent"
-    v-on:setImgOrder="setImgOrderFromComponent"
     v-on:ismodified="dataToSendToServer=true"
   >
   </listimgVueComp>
 
   <oneImgComp
+    :currentDiapo="currentView"
     v-if="category == 1"
     v-on:setCategory="category=0"
     :listStatus="dataToSendToServer"
-    :imgList="imageDatas"
-    v-on:updateImageList="updateImageListFromComp"
     :currentImage="currentImg"
     v-on:setCurrentImg="setCurrentImgFromComponent"
     v-on:ismodified="dataToSendToServer=true"
-    :currentKWData="currentKeywordDatas"
-    v-on:updateKeywordData="updateKeywordDataFromComponent"
-    :allKeywords="keywords"
-    v-on:updateAllKeywords="updateAllKeywordsFromComponent"
     v-on:sendKWTableToServer="SendFullKWTable = true"
-    v-on:reloadKeywordTable="getKeyWordsFromServer"
+    v-on:reloadKeywordTable="$store.dispatch('loadData')"
   >
   </oneImgComp>
 </section>

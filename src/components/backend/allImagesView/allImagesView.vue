@@ -14,11 +14,9 @@
 
         <newKeyWordComp
           :isOpen.sync="onClickAddKeyword"
-          :allKW.sync="keywords"
-          :newKW.sync="newKeywordsBox"
           cssPosition="item3"
-          v-on:change="getKeyWordsFromServer "
           :sendToServer="true"
+          v-on:change="setClassRightBtns"
         ></newKeyWordComp>
 
         <div class="right arrowUp" v-on:click="navButtons(-1)">
@@ -26,13 +24,13 @@
         </div>
 
         <router-link
-          v-for="(keyword, index) in keywords"
+          v-for="(keyword, index) in $store.state.keywordTable"
           :key="index"
           :class="classNameDispatcher[index]"
-          :to="{ name: 'imageByCategory', params: { id: keyword[0], selectedKeyword: keyword }}"
-          @mouseover.native="mouseOver(keyword[3])"
+          :to="{ name: 'imageByCategory', params: { id: keyword.keywords}}"
+          @mouseover.native="mouseOver(keyword.main_image)"
           @mouseleave.native="mouseLeave"
-        >{{ keyword[0] }}</router-link>
+        >{{ keyword.keywords }}</router-link>
 
         <div class="right arrowDown" v-on:click="navButtons(1)">
           <i class="fas fa-arrow-circle-down backFa"></i>
@@ -43,68 +41,32 @@
 </template>
 
 <script>
-const axios = require("axios");
 import newKeyWordComp from "@/components/backend/newKeyWordComp.vue";
 
-// import AxiosMixin from '@/mixins/axios.js'
-
 export default {
-  // name: "HelloWorld",
-  // mixins: [AxiosMixin],
-
   data() {
     return {
-      phpLink: "http://localhost/my-photos/src/php/index.php",
-      keywords: [],
       classNameDispatcher: [],
-      imageForKeyword: [],
-      position: 0,
       nbrOfButton: 9,
       classNameBtns: "navItem right itemR",
-      onClickAddKeyword: false,
-      newKeyword: null,
-      newKeywordsBox: []
+      onClickAddKeyword: false
     };
   },
   components: {
     newKeyWordComp
   },
+  watch: {},
   mounted: function() {
-    this.getKeyWordsFromServer();
+    this.setClassRightBtns();
   },
   methods: {
-    getKeyWordsFromServer() {
-      let req = this.phpLink + "?action=getKeyWords";
-      return axios
-        .get(req)
-        .then(response => {
-          this.keywords = [];
-
-          for (let index = 0; index < response.data.length; index++) {
-            this.keywords.push([
-              response.data[index].keywords,
-              response.data[index].id,
-              response.data[index].imageName,
-              response.data[index].main_image
-            ]);
-            this.setClassRightBtns();
-          }
-          if (response.data[2].imageName) {
-            this.imageForKeyword = response.data[2].imageName.split("|");
-          }
-          // console.log(this.imageForKeyword);
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-    },
     navButtons(direction) {
       if (direction === 1) {
-        let a = this.keywords.shift();
-        this.keywords.push(a);
+        let a = this.classNameDispatcher.shift();
+        this.classNameDispatcher.push(a);
       } else {
-        let b = this.keywords.pop();
-        this.keywords.unshift(b);
+        let b = this.classNameDispatcher.pop();
+        this.classNameDispatcher.unshift(b);
       }
     },
 
@@ -124,13 +86,18 @@ export default {
       }
     },
     mouseLeave: function() {
-      // document.getElementsByClassName("giantCircle")[0].style.backgroundPosition = "0 0";
       document.getElementsByClassName("giantCircle")[0].style.background = "";
     },
 
     setClassRightBtns() {
+      console.log(this.$store.state.loading);
+
       this.classNameDispatcher = [];
-      for (let index = 0; index < this.keywords.length; index++) {
+      for (
+        let index = 0;
+        index < this.$store.state.keywordTable.length;
+        index++
+      ) {
         if (index <= this.nbrOfButton - 1) {
           this.classNameDispatcher.push(this.classNameBtns + index);
         } else {

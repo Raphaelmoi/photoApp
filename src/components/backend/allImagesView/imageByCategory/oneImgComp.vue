@@ -11,9 +11,9 @@
       </div>
 
       <img
-        v-for="(image, index) in imageList"
+        v-for="(image, index) in $store.state.keywordTable[currentDiapo].imageName"
         :key="image.id"
-        :src="require('@/assets/images/'+ imageList[index].title)"
+        :src="require('@/assets/images/'+ $store.state.keywordTable[currentDiapo].imageName[index])"
         v-bind:class="currentImg==index ? '' : 'hide'"
       />
     </div>
@@ -25,14 +25,14 @@
         v-on:mouseup="toggleFalse"
         v-on:mousemove="grabTheBar"
       ></div>
-      <h4>{{ imageList[currentImg].title }}</h4>
+      <h4>{{ $store.state.keywordTable[currentDiapo].imageName[currentImg] }}</h4>
 
       <div>
         <h5>Legende :</h5>
         <div class="inputBox">
           <p
-            v-if="!listStatus && imageList[currentImg].legend !== ''"
-          >{{ imageList[currentImg].legend }}</p>
+            v-if="!listStatus && imgArray[currentImg].legend!== ''"
+          >{{imgArray[currentImg].legend }}</p>
           <p v-else-if="!listStatus" style="color:#888">
             Entre une légende en cliquant ici
             <i class="fas fa-arrow-right"></i>
@@ -40,8 +40,8 @@
           <input
             v-if="listStatus"
             type="text"
-            v-model="imageList[currentImg].legend"
-            value="imageList[currentImg].legend"
+            v-model="imgArray[currentImg].legend"
+            value="imgArray[currentImg].legend"
           />
           <button v-if="!listStatus" v-on:click="declareChange">
             <i class="fas fa-pen"></i>
@@ -50,7 +50,7 @@
 
         <h5>Balise alt</h5>
         <div class="inputBox">
-          <p v-if="!listStatus && imageList[currentImg].alt !== ''">{{ imageList[currentImg].alt }}</p>
+          <p v-if="!listStatus && imgArray[currentImg].alt !== ''">{{ imgArray[currentImg].alt }}</p>
           <p v-else-if="!listStatus" style="color:#888">
             Entrer contenu balise alt ici
             <i class="fas fa-arrow-right"></i>
@@ -58,8 +58,8 @@
           <input
             v-if="listStatus"
             type="text"
-            v-model="imageList[currentImg].alt"
-            value="imageList[currentImg].alt"
+            v-model="imgArray[currentImg].alt"
+            value="imgArray[currentImg].alt"
             placeholder="balise alt"
           />
           <button v-if="!listStatus" v-on:click="declareChange">
@@ -71,15 +71,15 @@
       <div>
         <div
           :key="fakerender"
-          :class="currentKeywordDatas[3]== imageList[currentImg].title  ? 'firstPicture activeBtn' : 'firstPicture'"
-          @click="currentKeywordDatas[3] = imageList[currentImg].title; fakerender+=1; declareChange()"
+          :class="$store.state.keywordTable[currentDiapo].main_image ==imgArray[currentImg].title  ? 'firstPicture activeBtn' : 'firstPicture'"
+          @click="$store.state.keywordTable[currentDiapo].main_image =imgArray[currentImg].title; fakerender+=1; declareChange()"
         >
           <p>Image à la une</p>
         </div>
         <div
           class="firstPicture deleteImage"
           style="border-color:tomato;"
-          @click="deleteImgFromDiapo(currentImg)"
+          @click="deleteImgFromDiapo()"
         >
           <p>
             <i class="fas fa-trash"></i>Supprimer cette image
@@ -88,17 +88,16 @@
       </div>
 
       <keywordComponent
-        :keywords="keywords"
-        :imgname="imageList[currentImg].title"
-        :diapoName="currentKeywordDatas[0]"
+        :keywords="$store.state.keywordTable"
+        :imgname="imgArray[currentImg].title"
+        :diapoName="$store.state.keywordTable[currentDiapo].keywords"
         v-on:isModified="$emit('sendKWTableToServer'); declareChange()"
       ></keywordComponent>
+
       <div style="position: relative">
         <a @click="onClickAddKeyword = !onClickAddKeyword">creer un nouveau diapo</a>
         <newKeyWordComp
           :isOpen.sync="onClickAddKeyword"
-          :allKW.sync="keywords"
-          :newKW.sync="newKeywordsBox"
           v-on:change="$emit('reloadKeywordTable')"
           :sendToServer="true"
         ></newKeyWordComp>
@@ -118,52 +117,31 @@ export default {
       fakerender: 0,
       keywordsSendToServer: false,
       onClickAddKeyword: false,
-      newKeywordsBox: []
+      imgArray: []
     };
   },
-  props: [
-    "imgList",
-    "currentImage",
-    "listStatus",
-    "currentKWData",
-    "allKeywords"
-  ],
-
+  props: ["currentImage", "listStatus", "currentDiapo"],
+  created() {
+    for (let item of this.$store.state.keywordTable[this.currentDiapo]
+      .imageName) {
+      for (let i = 0; i < this.$store.state.imagesTable.length; i++) {
+        if (item == this.$store.state.imagesTable[i].title) {
+          this.imgArray.push(this.$store.state.imagesTable[i]);
+        }
+      }
+    }
+  },
   components: {
     keywordComponent,
     newKeyWordComp
   },
   computed: {
-    imageList: {
-      get() {
-        return this.imgList;
-      },
-      set(newVal) {
-        this.$emit("updateImageList", newVal);
-      }
-    },
     currentImg: {
       get() {
         return this.currentImage;
       },
       set(newVal) {
         this.$emit("setCurrentImg", newVal);
-      }
-    },
-    currentKeywordDatas: {
-      get() {
-        return this.currentKWData;
-      },
-      set(newVal) {
-        this.$emit("updateKeywordData", newVal);
-      }
-    },
-    keywords: {
-      get() {
-        return this.allKeywords;
-      },
-      set(newVal) {
-        this.$emit("updateAllKeywords", newVal);
       }
     }
   },
@@ -172,18 +150,38 @@ export default {
       this.$emit("ismodified");
     },
     //diaporama navigation
-    deleteImgFromDiapo(id) {
+    deleteImgFromDiapo() {
       if (
         confirm(
           "Etes vous sur de vouloir supprimer cette image de ce diaporama? Cette action est irréverssible"
         )
       ) {
-        let oldTitle = this.imageList[id].title;
-        this.imageList.splice(id, 1);
-        this.currentKeywordDatas[2] = this.imageList;
-        // change the main image if it was the deleted img
-        if (this.currentKeywordDatas[3] === oldTitle) {
-          this.currentKeywordDatas[3] = this.imageList[0].title;
+        //faire -> supprimer image du diapo
+        //enlever une utilisation a l'image
+
+        let oldMainImage = this.$store.state.keywordTable[this.currentDiapo]
+          .main_image;
+        let changeMainImage = false;
+        let imgNameArray = this.$store.state.keywordTable[this.currentDiapo]
+          .imageName;
+
+        for (let i = 0; i < imgNameArray.length; i++) {
+          if (imgNameArray[i] == imgNameArray[this.currentImg]) {
+            if (imgNameArray[this.currentImg] == oldMainImage) {
+              changeMainImage = true;
+            }
+            this.$store.state.keywordTable[this.currentDiapo].imageName.splice(
+              i,
+              1
+            );
+          }
+        }
+        if (changeMainImage) {
+          this.$store.state.keywordTable[
+            this.currentDiapo
+          ].main_image = this.$store.state.keywordTable[
+            this.currentDiapo
+          ].imageName[0];
         }
         this.declareChange();
         this.$emit("setCategory");
@@ -191,10 +189,15 @@ export default {
     },
     navDiapo(direction) {
       let nextvalue = this.currentImg + direction;
-      if (nextvalue >= this.currentKeywordDatas[2].length) {
+      if (
+        nextvalue >=
+        this.$store.state.keywordTable[this.currentDiapo].imageName.length
+      ) {
         this.currentImg = 0;
       } else if (nextvalue < 0) {
-        this.currentImg = this.currentKeywordDatas[2].length - 1;
+        this.currentImg =
+          this.$store.state.keywordTable[this.currentDiapo].imageName.length -
+          1;
       } else {
         this.currentImg = nextvalue;
       }

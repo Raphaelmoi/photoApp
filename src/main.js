@@ -14,8 +14,13 @@ Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  computed: Vuex.mapState(['keywordTable', 'imagesTable', 'loading']),
   router,
   store,
+  created() {
+    //console.log(this.$store)
+    this.$store.dispatch('loadData') // dispatch loading
+  },
   components: { App },
   template: '<App/>'
 })

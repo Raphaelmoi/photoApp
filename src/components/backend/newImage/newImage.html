@@ -19,9 +19,12 @@
         <label for="file" v-else>Importer + d'image(s)</label>
       </div>
 
-      <div class="nokeyword" v-if="keywords.length == 0 && files.length !== 0">
+      <div
+        class="nokeyword"
+        v-if="$store.state.keywordTable.length == 0 && files.length !== 0"
+      >
         Pour commmencer,<br />
-        ajoutez un diapoarma en cliquant ci-dessous
+        ajoutez un diaporama en cliquant ci-dessous
         <br />
         <a class="myButton" @click="onClickAddKeyword = !onClickAddKeyword">
           Ajouter un diaporama
@@ -42,7 +45,6 @@
         :isDelete="item.fileIsDeleted"
         :imgUrl="item.imageUrl"
         :currentIndex="indexImg"
-        :kwList="keywords"
         :selectKW.sync="item.keyword"
         :legende.sync="item.legend"
         :desc.sync="item.description"
@@ -100,25 +102,12 @@
       >
         Ajouter un diaporama
       </a>
-      <div class="itemR1">
-        <div v-if="onClickAddKeyword" class="addkeyword">
-          <span class="closePanel" @click="onClickAddKeyword = false">X</span>
-          <label for="newKeyword" class="">Créer un diaporama</label>
-          <div>
-            <input type="text" v-model="newKeyword" v-on:keyup.enter='createNewKeyWord(false)' />
-            <i class="fas fa-plus" @click="createNewKeyWord(false)"></i>
-
-            <a
-              class="validateAll "
-              type="submit"
-              @click="createNewKeyWord(true)"
-            >
-              valider
-            </a>
-          </div>
-        </div>
-      </div>
-
+      <newKeyWordComp
+        :isOpen.sync="onClickAddKeyword"
+        cssPosition="itemR1"
+        :sendToServer="true"
+        v-on:change=""
+      ></newKeyWordComp>
       <a
         v-if="files.length !== 0"
         class="arrowNavItem right itemR4"
@@ -148,8 +137,6 @@
       >
         Enregistrer ({{ nbrImageLeft }} images restantes)
       </button>
-
     </div>
   </div>
-
 </section>
