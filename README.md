@@ -1,6 +1,6 @@
 # my-photos
 
-> A Vue.js project
+> A Vue.js project to manage images
 
 ## Build Setup
 
